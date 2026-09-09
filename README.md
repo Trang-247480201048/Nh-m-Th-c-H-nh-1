@@ -1,36 +1,11 @@
-# MÔ TẢ DỰ ÁN QUẢN LÝ VÉ XEM PHIM
+Mô tả dự án – Hệ thống quản lý vé xem phim
 
-## 1. Giới thiệu dự án
+Dự án Hệ thống quản lý vé xem phim được xây dựng nhằm hỗ trợ việc quản lý hoạt động của một rạp chiếu phim và quá trình đặt vé của khách hàng trên nền tảng trực tuyến. Hệ thống giúp số hóa các công việc như quản lý thông tin phim, phòng chiếu, suất chiếu, ghế ngồi, khách hàng và vé xem phim.
 
-Dự án **Quản lý vé xem phim** được xây dựng nhằm phát triển một hệ thống hỗ trợ quản lý hoạt động bán và đặt vé xem phim tại rạp. Hệ thống giúp khách hàng có thể dễ dàng tìm kiếm phim, xem thông tin phim, lựa chọn suất chiếu, phòng chiếu và ghế ngồi, sau đó thực hiện đặt vé một cách thuận tiện.
+Đối với khách hàng, hệ thống cho phép đăng ký và đăng nhập tài khoản, xem danh sách và thông tin chi tiết các bộ phim, lựa chọn ngày và suất chiếu phù hợp, xem sơ đồ ghế, lựa chọn ghế còn trống, đặt vé và xem lại lịch sử các vé đã đặt. Sau khi đặt vé, hệ thống lưu trữ thông tin vé và tổng số tiền cần thanh toán.
 
-Bên cạnh chức năng hỗ trợ khách hàng đặt vé, hệ thống còn cung cấp các chức năng quản lý dành cho nhân viên hoặc quản trị viên như quản lý thông tin phim, thể loại phim, phòng chiếu, ghế ngồi, suất chiếu, vé và thông tin khách hàng.
+Đối với quản trị viên, hệ thống cung cấp các chức năng quản lý phim, phòng chiếu, ghế ngồi, suất chiếu, khách hàng và vé. Quản trị viên có thể thêm, sửa, xóa và cập nhật thông tin, đồng thời theo dõi tình trạng đặt vé và thống kê doanh thu của rạp.
 
-Dự án được phát triển theo mô hình **Front-end – Back-end – Database**, trong đó giao diện người dùng được xây dựng bằng HTML, CSS và JavaScript; Back-end sử dụng Node.js và Express để xử lý các yêu cầu của hệ thống; dữ liệu được lưu trữ và quản lý bằng SQL Server.
+Về mặt kỹ thuật, dự án được xây dựng theo mô hình Front-end – Back-end – Database. Phần Front-end sử dụng HTML, CSS và JavaScript để xây dựng giao diện và tương tác với người dùng. Phần Back-end sử dụng Node.js và Express.js để xử lý các yêu cầu, nghiệp vụ đặt vé và trao đổi dữ liệu. Database sử dụng SQL Server hoặc MySQL để lưu trữ và quản lý dữ liệu của hệ thống.
 
-## 2. Mục tiêu của dự án
-
-Mục tiêu của dự án là xây dựng một hệ thống quản lý vé xem phim có giao diện trực quan, dễ sử dụng và hỗ trợ hiệu quả các hoạt động đặt vé và quản lý tại rạp.
-
-Hệ thống hướng tới các mục tiêu chính:
-
-* Hỗ trợ khách hàng tìm kiếm và xem thông tin các bộ phim đang chiếu.
-* Cho phép khách hàng lựa chọn ngày chiếu, suất chiếu và ghế ngồi.
-* Hỗ trợ thực hiện đặt vé và quản lý thông tin vé.
-* Hỗ trợ nhân viên quản lý phim, suất chiếu, phòng chiếu và ghế.
-* Quản lý thông tin khách hàng và lịch sử đặt vé.
-* Lưu trữ dữ liệu một cách có hệ thống và hạn chế sai sót trong quá trình quản lý.
-* Tạo nền tảng để có thể mở rộng thêm các chức năng trong tương lai.
-
-## 3. Đối tượng sử dụng
-
-Hệ thống hướng tới hai nhóm người dùng chính:
-
-**Khách hàng:** sử dụng hệ thống để xem phim, tìm kiếm thông tin, lựa chọn suất chiếu, chọn ghế và đặt vé.
-
-**Quản trị viên/Nhân viên:** sử dụng hệ thống để quản lý phim, phòng chiếu, ghế, suất chiếu, vé và thông tin khách hàng.
-
-## 4. Phạm vi dự án
-
-Trong phạm vi dự án, nhóm tập trung xây dựng các chức năng cơ bản của một hệ thống quản lý vé xem phim, bao gồm quản lý phim, thể loại, phòng chiếu, ghế, suất chiếu, khách hàng và vé. Hệ thống được thiết kế theo hướng có thể phát triển thêm các chức năng như thanh toán trực tuyến, đăng nhập tài khoản, khuyến mãi và thống kê doanh thu trong các phiên bản tiếp theo.
-
+Mục tiêu của dự án là xây dựng một hệ thống quản lý vé xem phim dễ sử dụng, có khả năng quản lý dữ liệu tập trung và hỗ trợ tự động hóa quy trình đặt vé, đồng thời giúp nhóm vận dụng kiến thức về lập trình Web, cơ sở dữ liệu và phát triển hệ thống vào một bài toán thực tế.
