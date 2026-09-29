@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Đặt lịch khám</title>
+
+    <link rel="stylesheet" href="dat lich kham benh.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="header">
+
+        <div class="logo">
+            <span>+</span> MediCare
+        </div>
+
+        <nav>
+            <a href="#">Trang chủ</a>
+            <a href="#" class="active">Đặt lịch khám</a>
+            <a href="#">Bác sĩ</a>
+            <a href="#">Lịch khám</a>
+            <a href="#">Hồ sơ</a>
+        </nav>
+
+        <button class="login-btn">
+            Đăng nhập
+        </button>
+
+    </header>
+
+
+    <!-- ================= TIÊU ĐỀ ================= -->
+
+    <section class="title">
+
+        <div class="title-badge">
+            ĐẶT LỊCH KHÁM TRỰC TUYẾN
+        </div>
+
+        <h1>
+            Đặt lịch khám
+        </h1>
+
+        <p>
+            Lựa chọn chuyên khoa, bác sĩ và thời gian khám phù hợp với bạn.
+        </p>
+
+    </section>
+
+
+    <!-- ================= NỘI DUNG CHÍNH ================= -->
+
+    <main class="container">
+
+
+        <!-- ================= FORM ĐẶT LỊCH ================= -->
+
+        <section class="booking-box">
+
+            <div class="box-heading">
+
+                <div>
+                    <h2>
+                        Thông tin đặt lịch
+                    </h2>
+
+                    <p>
+                        Vui lòng điền đầy đủ thông tin để đăng ký lịch khám.
+                    </p>
+                </div>
+
+                <span class="required-note">
+                    * Thông tin bắt buộc
+                </span>
+
+            </div>
+
+
+            <!-- ================= BƯỚC 1 ================= -->
+
+            <div class="step">
+
+                <div class="step-number">
+                    1
+                </div>
+
+                <div class="step-content">
+
+                    <h3>
+                        Chọn chuyên khoa
+                    </h3>
+
+                    <p class="step-note">
+                        Lựa chọn chuyên khoa phù hợp với nhu cầu khám.
+                    </p>
+
+
+                    <div class="form-group">
+
+                        <label for="specialty">
+                            Chuyên khoa <span>*</span>
+                        </label>
+
+                        <select id="specialty">
+
+                            <option>
+                                -- Chọn chuyên khoa --
+                            </option>
+
+                            <option selected>
+                                Nội khoa
+                            </option>
+
+                            <option>
+                                Ngoại khoa
+                            </option>
+
+                            <option>
+                                Nhi khoa
+                            </option>
+
+                            <option>
+                                Tim mạch
+                            </option>
+
+                            <option>
+                                Da liễu
+                            </option>
+
+                            <option>
+                                Tai - Mũi - Họng
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= BƯỚC 2 ================= -->
+
+            <div class="step">
+
+                <div class="step-number">
+                    2
+                </div>
+
+                <div class="step-content">
+
+                    <h3>
+                        Chọn bác sĩ
+                    </h3>
+
+                    <p class="step-note">
+                        Xem và lựa chọn bác sĩ thuộc chuyên khoa đã chọn.
+                    </p>
+
+
+                    <div class="form-group">
+
+                        <label for="doctor">
+                            Bác sĩ <span>*</span>
+                        </label>
+
+                        <select id="doctor">
+
+                            <option>
+                                -- Chọn bác sĩ --
+                            </option>
+
+                            <option selected>
+                                BS. Nguyễn Văn An
+                            </option>
+
+                            <option>
+                                BS. Trần Thị Mai
+                            </option>
+
+                            <option>
+                                BS. Lê Minh Đức
+                            </option>
+
+                            <option>
+                                BS. Phạm Thu Hà
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="doctor-preview">
+
+                        <div class="doctor-avatar">
+                            👨‍⚕️
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                BS. Nguyễn Văn An
+                            </strong>
+
+                            <p>
+                                Chuyên khoa Nội khoa · Có lịch khám hôm nay
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= BƯỚC 3 ================= -->
+
+            <div class="step">
+
+                <div class="step-number">
+                    3
+                </div>
+
+                <div class="step-content">
+
+                    <h3>
+                        Chọn ngày và giờ khám
+                    </h3>
+
+                    <p class="step-note">
+                        Các khung giờ màu xanh đang còn trống.
+                    </p>
+
+
+                    <div class="form-group">
+
+                        <label for="date">
+                            Ngày khám <span>*</span>
+                        </label>
+
+                        <input
+                            id="date"
+                            type="date"
+                            value="2026-10-15"
+                        >
+
+                    </div>
+
+
+                    <label class="time-label">
+                        Giờ khám <span>*</span>
+                    </label>
+
+
+                    <div class="time-list">
+
+
+                        <button
+                            type="button"
+                            class="time available selected"
+                        >
+
+                            08:00 - 08:30
+
+                            <small>
+                                Còn trống
+                            </small>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="time available"
+                        >
+
+                            08:30 - 09:00
+
+                            <small>
+                                Còn trống
+                            </small>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="time unavailable"
+                            disabled
+                        >
+
+                            09:00 - 09:30
+
+                            <small>
+                                Đã đặt
+                            </small>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="time available"
+                        >
+
+                            09:30 - 10:00
+
+                            <small>
+                                Còn trống
+                            </small>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="time available"
+                        >
+
+                            14:00 - 14:30
+
+                            <small>
+                                Còn trống
+                            </small>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="time unavailable"
+                            disabled
+                        >
+
+                            14:30 - 15:00
+
+                            <small>
+                                Đã đặt
+                            </small>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="time available"
+                        >
+
+                            15:00 - 15:30
+
+                            <small>
+                                Còn trống
+                            </small>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="time available"
+                        >
+
+                            15:30 - 16:00
+
+                            <small>
+                                Còn trống
+                            </small>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- KIỂM TRA GIỜ -->
+
+                    <div class="availability-note">
+
+                        <span>
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Kiểm tra giờ còn trống
+                            </strong>
+
+                            <p>
+                                Hệ thống không cho phép chọn khung giờ đã có người đặt.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= BƯỚC 4 ================= -->
+
+            <div class="step">
+
+                <div class="step-number">
+                    4
+                </div>
+
+                <div class="step-content">
+
+                    <h3>
+                        Thông tin bệnh nhân
+                    </h3>
+
+                    <p class="step-note">
+                        Thông tin dùng để xác nhận và liên hệ khi cần thiết.
+                    </p>
+
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label for="name">
+                                Họ và tên <span>*</span>
+                            </label>
+
+                            <input
+                                id="name"
+                                type="text"
+                                placeholder="Nhập họ và tên"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="phone">
+                                Số điện thoại <span>*</span>
+                            </label>
+
+                            <input
+                                id="phone"
+                                type="tel"
+                                placeholder="Nhập số điện thoại"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="reason">
+                            Lý do khám
+                        </label>
+
+                        <textarea
+                            id="reason"
+                            placeholder="Nhập lý do hoặc triệu chứng cần khám..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= NÚT ĐẶT LỊCH ================= -->
+
+            <button
+                class="booking-button"
+                type="button"
+            >
+
+                Tiếp tục xác nhận lịch
+
+                <span>
+                    →
+                </span>
+
+            </button>
+
+
+            <p class="security-note">
+                🔒 Thông tin của bạn được sử dụng để phục vụ việc đặt lịch khám.
+            </p>
+
+        </section>
+
+
+        <!-- ================= TÓM TẮT LỊCH ================= -->
+
+        <aside class="summary-box">
+
+
+            <div class="summary-header">
+
+                <div>
+
+                    <span class="summary-label">
+                        TÓM TẮT
+                    </span>
+
+                    <h2>
+                        Lịch khám của bạn
+                    </h2>
+
+                </div>
+
+                <span class="calendar-icon">
+                    📅
+                </span>
+
+            </div>
+
+
+            <!-- BÁC SĨ -->
+
+            <div class="summary-doctor">
+
+                <div class="summary-avatar">
+                    👨‍⚕️
+                </div>
+
+                <div>
+
+                    <strong>
+                        BS. Nguyễn Văn An
+                    </strong>
+
+                    <p>
+                        Nội khoa
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- NGÀY -->
+
+            <div class="summary-line">
+
+                <span>
+                    📅 Ngày khám
+                </span>
+
+                <strong>
+                    15/10/2026
+                </strong>
+
+            </div>
+
+
+            <!-- GIỜ -->
+
+            <div class="summary-line">
+
+                <span>
+                    🕐 Giờ khám
+                </span>
+
+                <strong>
+                    08:00 - 08:30
+                </strong>
+
+            </div>
+
+
+            <!-- CHUYÊN KHOA -->
+
+            <div class="summary-line">
+
+                <span>
+                    🏥 Chuyên khoa
+                </span>
+
+                <strong>
+                    Nội khoa
+                </strong>
+
+            </div>
+
+
+            <!-- TRẠNG THÁI -->
+
+            <div class="summary-status">
+
+                <span class="status-dot"></span>
+
+                Khung giờ đang còn trống
+
+            </div>
+
+
+            <!-- LƯU Ý -->
+
+            <div class="summary-note">
+
+                <strong>
+                    Lưu ý
+                </strong>
+
+                <p>
+                    Vui lòng đến cơ sở y tế trước giờ khám khoảng 15 phút.
+                </p>
+
+            </div>
+
+
+            <!-- TIẾN TRÌNH -->
+
+            <div class="progress">
+
+                <div class="progress-title">
+
+                    <span>
+                        Tiến trình đặt lịch
+                    </span>
+
+                    <strong>
+                        3/4
+                    </strong>
+
+                </div>
+
+
+                <div class="progress-bar">
+
+                    <span></span>
+
+                </div>
+
+            </div>
+
+
+        </aside>
+
+    </main>
+
+
+    <!-- ================= CÁC TRẠNG THÁI ================= -->
+
+    <section class="demo-states container">
+
+
+        <!-- XÁC NHẬN -->
+
+        <div class="confirm-box">
+
+            <h3>
+                ✓ Xác nhận lịch khám
+            </h3>
+
+            <p>
+                Vui lòng kiểm tra lại thông tin trước khi xác nhận.
+            </p>
+
+
+            <div class="confirm-info">
+
+                <p>
+                    <strong>Chuyên khoa:</strong>
+                    Nội khoa
+                </p>
+
+                <p>
+                    <strong>Bác sĩ:</strong>
+                    BS. Nguyễn Văn An
+                </p>
+
+                <p>
+                    <strong>Ngày:</strong>
+                    15/10/2026
+                </p>
+
+                <p>
+                    <strong>Giờ:</strong>
+                    08:00 - 08:30
+                </p>
+
+            </div>
+
+
+            <button class="confirm-button">
+                Xác nhận lịch
+            </button>
+
+        </div>
+
+
+        <!-- TRÙNG LỊCH -->
+
+        <div class="warning-box">
+
+            <strong>
+                ⚠ Không thể đặt lịch
+            </strong>
+
+            <p>
+                Khung giờ bạn lựa chọn đã được đặt trước.
+                Vui lòng chọn một khung giờ khác.
+            </p>
+
+        </div>
+
+
+        <!-- THÀNH CÔNG -->
+
+        <div class="success-box">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <h3>
+                    Đặt lịch thành công!
+                </h3>
+
+                <p>
+                    Lịch khám của bạn đã được ghi nhận.
+                    Vui lòng đến cơ sở y tế trước giờ khám 15 phút.
+                </p>
+
+                <strong>
+                    Mã lịch khám: LK20261015001
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+
+            <div>
+
+                <div class="footer-logo">
+
+                    <span>+</span>
+                    MediCare
+
+                </div>
+
+                <p>
+                    Hệ thống hỗ trợ đặt lịch khám bệnh trực tuyến.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Đặt lịch khám
+                </h3>
+
+                <p>
+                    Chọn chuyên khoa · Chọn bác sĩ · Chọn ngày · Chọn giờ
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Hỗ trợ
+                </h3>
+
+                <p>
+                    Quản lý lịch khám và thông tin bệnh nhân.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 MediCare - Hệ thống đặt lịch khám bệnh
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>
