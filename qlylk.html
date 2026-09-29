@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Quản Lý Lịch Khám & Quá Trình Khám</title>
+    <!-- Nhúng file CSS chung đúng đường dẫn thư mục css/common.css -->
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+
+    <!-- HEADER SYSTEM -->
+    <header class="header">
+        <div class="logo">Medi<span>Care</span></div>
+        <nav>
+            <a href="#">Trang chủ</a>
+            <a href="#">Bác sĩ</a>
+            <a href="#" class="active">Quản lý lịch khám</a>
+            <a href="#">Hồ sơ bệnh nhân</a>
+            <a href="#">Admin</a>
+        </nav>
+        <button class="login-btn">Đăng xuất</button>
+    </header>
+
+    <!-- TITLE PAGE -->
+    <div class="title">
+        <h1>QUẢN LÝ LỊCH KHÁM & QUÁ TRÌNH KHÁM</h1>
+        <p>Phân hệ xử lý tiếp nhận, xếp hàng chờ và lưu lịch sử khám bệnh (Module LINH)</p>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+
+        <!-- SEARCH & FILTER BOX -->
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Tìm kiếm theo tên bệnh nhân hoặc mã lịch..." onkeyup="filterAppointments()">
+            <select id="status-filter" style="width: 220px;" onchange="filterAppointments()">
+                <option value="">-- Tất cả trạng thái --</option>
+                <option value="Chờ xác nhận">Chờ xác nhận</option>
+                <option value="Đã xác nhận">Đã xác nhận</option>
+                <option value="Đã hủy">Đã hủy</option>
+                <option value="Đã khám">Đã khám</option>
+            </select>
+        </div>
+
+        <!-- SECTION 1: DANH SÁCH LỊCH HẸN KHÁM -->
+        <div class="card" style="margin-bottom: 30px;">
+            <h2 class="section-title">1. Danh Sách Lịch Hẹn Khám</h2>
+            <p class="section-description">Xem chi tiết, cập nhật trạng thái, đổi lịch hoặc hủy lịch khám của bệnh nhân.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã Lịch</th>
+                            <th>Bệnh Nhân</th>
+                            <th>Bác Sĩ</th>
+                            <th>Ngày Khám</th>
+                            <th>Giờ Khám</th>
+                            <th>Trạng Thái</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-appointments">
+                        <!-- Render từ JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- GRID 2 CỘT: HÀNG CHỜ & LỊCH SỬ KHÁM -->
+        <div class="grid grid-2">
+
+            <!-- SECTION 2: CHECK-IN & HÀNG CHỜ KHÁM -->
+            <div class="card">
+                <h2 class="section-title">2. Hàng Chờ Khám (Check-in)</h2>
+                <p class="section-description">Quản lý thứ tự bệnh nhân đã check-in và đang chờ vào khám.</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Bệnh Nhân</th>
+                                <th>Trạng Thái Lượt</th>
+                                <th>Xử Lý</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl-queue">
+                            <!-- Render từ JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 3: LƯU LỊCH SỬ KHÁM -->
+            <div class="card">
+                <h2 class="section-title">3. Lịch Sử Khám Bệnh</h2>
+                <p class="section-description">Hồ sơ lượt khám đã hoàn tất và kết quả chẩn đoán từ Bác sĩ.</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã Lịch</th>
+                                <th>Bệnh Nhân</th>
+                                <th>Bác Sĩ Khám</th>
+                                <th>Chẩn Đoán / Kết Quả</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl-history">
+                            <!-- Render từ JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL 1: XEM CHI TIẾT LỊCH HẸN -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chi Tiết Lịch Hẹn Khám</h3>
+                <button class="close-btn" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+            <div class="confirm-info" id="detail-info-content">
+                <!-- Nội dung render từ JS -->
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-secondary" onclick="closeModal('detailModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ĐỔI LỊCH KHÁM -->
+    <div class="modal" id="rescheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đổi Lịch Khám</h3>
+                <button class="close-btn" onclick="closeModal('rescheduleModal')">&times;</button>
+            </div>
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label>Ngày khám mới:</label>
+                <input type="date" id="edit-date">
+            </div>
+            <div class="form-group">
+                <label>Giờ khám mới:</label>
+                <select id="edit-time">
+                    <option value="08:00">08:00 AM</option>
+                    <option value="09:30">09:30 AM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="15:30">03:30 PM</option>
+                </select>
+            </div>
+            <div style="text-align: right; gap: 10px; display: flex; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeModal('rescheduleModal')">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="saveReschedule()">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: NHẬP KẾT QUẢ KHÁM (BÁC SĨ) -->
+    <div class="modal" id="examModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cập Nhật Kết Quả Khám Bệnh</h3>
+                <button class="close-btn" onclick="closeModal('examModal')">&times;</button>
+            </div>
+            <input type="hidden" id="exam-queue-stt">
+            <div class="form-group">
+                <label>Chẩn đoán bệnh:</label>
+                <input type="text" id="exam-diagnosis" placeholder="Nhập chẩn đoán của bác sĩ...">
+            </div>
+            <div class="form-group">
+                <label>Đơn thuốc / Ghi chú tái khám:</label>
+                <textarea id="exam-note" placeholder="Nhập đơn thuốc hoặc dặn dò..."></textarea>
+            </div>
+            <div style="text-align: right; gap: 10px; display: flex; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeModal('examModal')">Quay lại</button>
+                <button class="btn btn-primary" onclick="saveExamination()">Hoàn thành & Lưu lịch sử</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let appointments = [
+            { id: 'LK01', patient: 'Nguyễn Văn Anh', doctor: 'BS. Lê Văn C', date: '2026-09-30', time: '08:00 AM', status: 'Chờ xác nhận' },
+            { id: 'LK02', patient: 'Trần Thị Bình', doctor: 'BS. Phạm Gia Khánh', date: '2026-09-30', time: '09:30 AM', status: 'Đã xác nhận' },
+            { id: 'LK03', patient: 'Hoàng Văn Cường', doctor: 'BS. Nguyễn Thanh Liêm', date: '2026-09-30', time: '10:00 AM', status: 'Đã xác nhận' },
+            { id: 'LK04', patient: 'Phạm Minh Đức', doctor: 'BS. Lê Văn C', date: '2026-09-29', time: '14:00 PM', status: 'Đã khám' }
+        ];
+
+        let queue = [];
+        let history = [
+            { id: 'LK04', patient: 'Phạm Minh Đức', doctor: 'BS. Lê Văn C', diagnosis: 'Viêm họng cấp', note: 'Uống thuốc 5 ngày, tái khám nếu còn sốt' }
+        ];
+
+        function getBadgeClass(status) {
+            switch(status) {
+                case 'Chờ xác nhận': return 'badge-warning';
+                case 'Đã xác nhận': return 'badge-primary';
+                case 'Đã khám': return 'badge-success';
+                case 'Đã hủy': return 'badge-disabled';
+                case 'Chờ khám': return 'badge-warning';
+                case 'Đang khám': return 'badge-primary';
+                default: return 'badge-disabled';
+            }
+        }
+
+        function renderAppointments(data = appointments) {
+            const tbody = document.getElementById('tbl-appointments');
+            tbody.innerHTML = '';
+
+            data.forEach(app => {
+                let actions = `<button class="btn btn-secondary" onclick="openDetailModal('${app.id}')">Xem</button>`;
+
+                if (app.status === 'Chờ xác nhận') {
+                    actions += `<button class="btn btn-primary" onclick="updateStatus('${app.id}', 'Đã xác nhận')">Xác nhận</button>`;
+                }
+
+                if (app.status === 'Đã xác nhận') {
+                    actions += `<button class="btn btn-primary" style="background:var(--success)" onclick="checkIn('${app.id}')">Check-in</button>`;
+                }
+
+                if (app.status !== 'Đã khám' && app.status !== 'Đã hủy') {
+                    actions += `<button class="btn btn-secondary" onclick="openRescheduleModal('${app.id}')">Đổi lịch</button>`;
+                    actions += `<button class="btn btn-danger" onclick="updateStatus('${app.id}', 'Đã hủy')">Hủy</button>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${app.id}</b></td>
+                        <td>${app.patient}</td>
+                        <td>${app.doctor}</td>
+                        <td>${app.date}</td>
+                        <td>${app.time}</td>
+                        <td><span class="badge ${getBadgeClass(app.status)}">${app.status}</span></td>
+                        <td class="actions-cell">${actions}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderQueue() {
+            const tbody = document.getElementById('tbl-queue');
+            tbody.innerHTML = '';
+
+            if (queue.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted)">Chưa có bệnh nhân check-in</td></tr>`;
+                return;
+            }
+
+            queue.forEach(item => {
+                let btn = '';
+                if (item.queueStatus === 'Chờ khám') {
+                    btn = `<button class="btn btn-primary" onclick="updateQueueStatus(${item.stt}, 'Đang khám')">Gọi khám</button>`;
+                } else if (item.queueStatus === 'Đang khám') {
+                    btn = `<button class="btn btn-primary" style="background:var(--success)" onclick="openExamModal(${item.stt})">Hoàn tất</button>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="queue-number">#${item.stt}</span></td>
+                        <td><b>${item.patient}</b></td>
+                        <td><span class="badge ${getBadgeClass(item.queueStatus)}">${item.queueStatus}</span></td>
+                        <td>${btn}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('tbl-history');
+            tbody.innerHTML = '';
+
+            history.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${item.id}</b></td>
+                        <td>${item.patient}</td>
+                        <td>${item.doctor}</td>
+                        <td><b>${item.diagnosis}</b><br><small style="color:var(--text-light)">${item.note}</small></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateStatus(id, newStatus) {
+            const app = appointments.find(a => a.id === id);
+            if (app) {
+                app.status = newStatus;
+                renderAppointments();
+            }
+        }
+
+        function checkIn(id) {
+            const app = appointments.find(a => a.id === id);
+            if (app) {
+                const exist = queue.find(q => q.id === id);
+                if (exist) {
+                    alert('Bệnh nhân này đã check-in rồi!');
+                    return;
+                }
+
+                const newSTT = queue.length + 1;
+                queue.push({
+                    stt: newSTT,
+                    id: app.id,
+                    patient: app.patient,
+                    doctor: app.doctor,
+                    queueStatus: 'Chờ khám'
+                });
+
+                renderQueue();
+                alert(`Check-in thành công cho bệnh nhân ${app.patient}! Số thứ tự: #${newSTT}`);
+            }
+        }
+
+        function updateQueueStatus(stt, status) {
+            const q = queue.find(item => item.stt === stt);
+            if (q) {
+                q.queueStatus = status;
+                renderQueue();
+            }
+        }
+
+        function openDetailModal(id) {
+            const app = appointments.find(a => a.id === id);
+            if (app) {
+                document.getElementById('detail-info-content').innerHTML = `
+                    <p><strong>Mã lịch hẹn:</strong> ${app.id}</p>
+                    <p><strong>Họ và tên bệnh nhân:</strong> ${app.patient}</p>
+                    <p><strong>Bác sĩ phụ trách:</strong> ${app.doctor}</p>
+                    <p><strong>Ngày khám:</strong> ${app.date}</p>
+                    <p><strong>Khung giờ:</strong> ${app.time}</p>
+                    <p><strong>Trạng thái hiện tại:</strong> <span class="badge ${getBadgeClass(app.status)}">${app.status}</span></p>
+                `;
+                document.getElementById('detailModal').style.display = 'flex';
+            }
+        }
+
+        function openRescheduleModal(id) {
+            const app = appointments.find(a => a.id === id);
+            if (app) {
+                document.getElementById('edit-id').value = id;
+                document.getElementById('edit-date').value = app.date;
+                document.getElementById('rescheduleModal').style.display = 'flex';
+            }
+        }
+
+        function saveReschedule() {
+            const id = document.getElementById('edit-id').value;
+            const newDate = document.getElementById('edit-date').value;
+            const newTime = document.getElementById('edit-time').selectedOptions[0].text;
+
+            if (!newDate) {
+                alert('Vui lòng chọn ngày khám mới!');
+                return;
+            }
+
+            const app = appointments.find(a => a.id === id);
+            if (app) {
+                app.date = newDate;
+                app.time = newTime;
+                renderAppointments();
+                closeModal('rescheduleModal');
+                alert('Đã cập nhật đổi lịch khám thành công!');
+            }
+        }
+
+        function openExamModal(stt) {
+            document.getElementById('exam-queue-stt').value = stt;
+            document.getElementById('exam-diagnosis').value = '';
+            document.getElementById('exam-note').value = '';
+            document.getElementById('examModal').style.display = 'flex';
+        }
+
+        function saveExamination() {
+            const stt = parseInt(document.getElementById('exam-queue-stt').value);
+            const diagnosis = document.getElementById('exam-diagnosis').value;
+            const note = document.getElementById('exam-note').value;
+
+            if (!diagnosis) {
+                alert('Vui lòng nhập chẩn đoán bệnh!');
+                return;
+            }
+
+            const qIndex = queue.findIndex(item => item.stt === stt);
+            if (qIndex !== -1) {
+                const qItem = queue[qIndex];
+                const app = appointments.find(a => a.id === qItem.id);
+
+                if (app) {
+                    app.status = 'Đã khám';
+                    history.push({
+                        id: app.id,
+                        patient: app.patient,
+                        doctor: app.doctor,
+                        diagnosis: diagnosis,
+                        note: note || 'Không có ghi chú'
+                    });
+                }
+
+                queue.splice(qIndex, 1);
+
+                renderAppointments();
+                renderQueue();
+                renderHistory();
+                closeModal('examModal');
+                alert('Đã hoàn tất lượt khám và lưu vào lịch sử khám bệnh!');
+            }
+        }
+
+        function filterAppointments() {
+            const keyword = document.getElementById('search-input').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+
+            const filtered = appointments.filter(app => {
+                const matchKeyword = app.patient.toLowerCase().includes(keyword) || app.id.toLowerCase().includes(keyword);
+                const matchStatus = status === '' || app.status === status;
+                return matchKeyword && matchStatus;
+            });
+
+            renderAppointments(filtered);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        renderAppointments();
+        renderQueue();
+        renderHistory();
+    </script>
+</body>
+</html>
