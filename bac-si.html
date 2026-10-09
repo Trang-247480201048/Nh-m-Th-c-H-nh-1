@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bác sĩ & Chuyên khoa - MediCare</title>
+
+    <!-- CSS chung -->
+    <link rel="stylesheet" href="common.css">
+
+    <!-- CSS riêng trang bác sĩ -->
+    <link rel="stylesheet" href="bac-si.css">
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header">
+
+        <div class="logo">
+            <span>+</span> MediCare
+        </div>
+
+
+        <nav>
+
+            <a href="trang-chu.html">
+                Trang chủ
+            </a>
+
+            <a href="dat-lich.html">
+                Đặt lịch khám
+            </a>
+
+            <a href="bac-si.html" class="active">
+                Bác sĩ
+            </a>
+
+            <a href="ho-so.html">
+                Hồ sơ
+            </a>
+
+        </nav>
+
+
+        <div class="auth-buttons">
+
+            <a href="dang-nhap.html" class="login-btn">
+                Đăng nhập
+            </a>
+
+            <a href="dang-ky.html" class="register-btn">
+                Đăng ký
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="doctor-hero">
+
+            <div class="doctor-hero-content">
+
+                <span class="hero-tag">
+                    ĐỘI NGŨ Y BÁC SĨ
+                </span>
+
+
+                <h1>
+                    Bác sĩ &
+                    <br>
+                    <span>Chuyên khoa</span>
+                </h1>
+
+
+                <p>
+                    Tìm kiếm bác sĩ phù hợp với nhu cầu khám bệnh
+                    và lựa chọn thời gian khám thuận tiện.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CONTAINER
+        ================================================== -->
+
+        <section class="doctor-container">
+
+
+            <!-- =============================================
+                 TÌM KIẾM BÁC SĨ
+            ============================================== -->
+
+            <div class="search-card">
+
+                <div class="search-title">
+
+                    <h2>
+                        Tìm kiếm bác sĩ
+                    </h2>
+
+                    <p>
+                        Tìm bác sĩ theo tên hoặc chuyên khoa.
+                    </p>
+
+                </div>
+
+
+                <div class="search-form">
+
+
+                    <!-- Tên bác sĩ -->
+
+                    <div class="form-group">
+
+                        <label for="doctorSearch">
+                            Tên bác sĩ
+                        </label>
+
+                        <input
+                            type="text"
+                            id="doctorSearch"
+                            placeholder="Nhập tên bác sĩ..."
+                        >
+
+                    </div>
+
+
+
+                    <!-- Chuyên khoa -->
+
+                    <div class="form-group">
+
+                        <label for="specialtyFilter">
+                            Chuyên khoa
+                        </label>
+
+                        <select id="specialtyFilter">
+
+                            <option value="">
+                                Tất cả chuyên khoa
+                            </option>
+
+                            <option value="Nội khoa">
+                                Nội khoa
+                            </option>
+
+                            <option value="Ngoại khoa">
+                                Ngoại khoa
+                            </option>
+
+                            <option value="Nhi khoa">
+                                Nhi khoa
+                            </option>
+
+                            <option value="Tim mạch">
+                                Tim mạch
+                            </option>
+
+                            <option value="Da liễu">
+                                Da liễu
+                            </option>
+
+                            <option value="Tai - Mũi - Họng">
+                                Tai - Mũi - Họng
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Nút tìm kiếm -->
+
+                    <button
+                        type="button"
+                        id="searchDoctorBtn"
+                        class="search-btn"
+                    >
+                        Tìm kiếm
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 DANH SÁCH BÁC SĨ
+            ============================================== -->
+
+            <section class="doctor-list-section">
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Danh sách bác sĩ
+                        </h2>
+
+                        <p>
+                            Đội ngũ bác sĩ của MediCare
+                        </p>
+
+                    </div>
+
+
+                    <span
+                        id="doctorCount"
+                        class="doctor-count"
+                    >
+                        24 bác sĩ
+                    </span>
+
+                </div>
+
+
+
+                <!--
+                    JS sẽ tự động tạo 24 bác sĩ ở đây
+                    dựa trên dữ liệu trong bac-si.js
+                -->
+
+                <div
+                    id="doctorGrid"
+                    class="doctor-grid"
+                >
+                </div>
+
+
+
+                <!-- Không tìm thấy -->
+
+                <div
+                    id="noDoctor"
+                    class="no-doctor"
+                >
+
+                    <h3>
+                        Không tìm thấy bác sĩ
+                    </h3>
+
+                    <p>
+                        Vui lòng thử lại với tên bác sĩ
+                        hoặc chuyên khoa khác.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 CHUYÊN KHOA
+            ============================================== -->
+
+            <section class="specialty-section">
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Chuyên khoa
+                        </h2>
+
+                        <p>
+                            Lựa chọn chuyên khoa để xem
+                            danh sách bác sĩ tương ứng.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="specialty-grid">
+
+
+                    <!-- ================================
+                         NỘI KHOA
+                    ================================= -->
+
+                    <div
+                        class="specialty-card"
+                        data-specialty="Nội khoa"
+                    >
+
+                        <div class="specialty-icon">
+                            ✚
+                        </div>
+
+                        <h3>
+                            Nội khoa
+                        </h3>
+
+                        <p>
+                            4 bác sĩ
+                        </p>
+
+                        <span>
+                            Phòng 101 - 104
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- ================================
+                         NGOẠI KHOA
+                    ================================= -->
+
+                    <div
+                        class="specialty-card"
+                        data-specialty="Ngoại khoa"
+                    >
+
+                        <div class="specialty-icon">
+                            ⚕
+                        </div>
+
+                        <h3>
+                            Ngoại khoa
+                        </h3>
+
+                        <p>
+                            4 bác sĩ
+                        </p>
+
+                        <span>
+                            Phòng 201 - 204
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- ================================
+                         NHI KHOA
+                    ================================= -->
+
+                    <div
+                        class="specialty-card"
+                        data-specialty="Nhi khoa"
+                    >
+
+                        <div class="specialty-icon">
+                            👶
+                        </div>
+
+                        <h3>
+                            Nhi khoa
+                        </h3>
+
+                        <p>
+                            4 bác sĩ
+                        </p>
+
+                        <span>
+                            Phòng 301 - 304
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- ================================
+                         TIM MẠCH
+                    ================================= -->
+
+                    <div
+                        class="specialty-card"
+                        data-specialty="Tim mạch"
+                    >
+
+                        <div class="specialty-icon">
+                            ❤
+                        </div>
+
+                        <h3>
+                            Tim mạch
+                        </h3>
+
+                        <p>
+                            4 bác sĩ
+                        </p>
+
+                        <span>
+                            Phòng 401 - 404
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- ================================
+                         DA LIỄU
+                    ================================= -->
+
+                    <div
+                        class="specialty-card"
+                        data-specialty="Da liễu"
+                    >
+
+                        <div class="specialty-icon">
+                            ✦
+                        </div>
+
+                        <h3>
+                            Da liễu
+                        </h3>
+
+                        <p>
+                            4 bác sĩ
+                        </p>
+
+                        <span>
+                            Phòng 501 - 504
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- ================================
+                         TAI - MŨI - HỌNG
+                    ================================= -->
+
+                    <div
+                        class="specialty-card"
+                        data-specialty="Tai - Mũi - Họng"
+                    >
+
+                        <div class="specialty-icon">
+                            ◉
+                        </div>
+
+                        <h3>
+                            Tai - Mũi - Họng
+                        </h3>
+
+                        <p>
+                            4 bác sĩ
+                        </p>
+
+                        <span>
+                            Phòng 601 - 604
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 CTA
+            ============================================== -->
+
+            <section class="doctor-cta">
+
+                <div>
+
+                    <h2>
+                        Bạn đã tìm được bác sĩ phù hợp?
+                    </h2>
+
+                    <p>
+                        Đặt lịch khám ngay để tiết kiệm
+                        thời gian chờ đợi.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="dat-lich.html"
+                    class="cta-btn"
+                >
+                    Đặt lịch khám
+                </a>
+
+            </section>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         MODAL THÔNG TIN BÁC SĨ
+    ====================================================== -->
+
+    <div
+        id="doctorModal"
+        class="doctor-modal"
+    >
+
+        <div class="modal-content">
+
+
+            <!-- Nút đóng -->
+
+            <button
+                id="closeModal"
+                class="close-modal"
+                type="button"
+            >
+                &times;
+            </button>
+
+
+
+            <!-- Thông tin cơ bản -->
+
+            <div class="modal-header">
+
+
+                <div
+                    id="modalAvatar"
+                    class="modal-avatar"
+                >
+                    NA
+                </div>
+
+
+                <div>
+
+                    <h2 id="modalDoctorName">
+                        Bác sĩ
+                    </h2>
+
+                    <p id="modalSpecialty">
+                        Chuyên khoa
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Thông tin chi tiết -->
+
+            <div class="doctor-detail-grid">
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Học vị
+                    </span>
+
+                    <strong id="modalDegree">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Kinh nghiệm
+                    </span>
+
+                    <strong id="modalExperience">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Chuyên môn
+                    </span>
+
+                    <strong id="modalSkills">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Giới thiệu -->
+
+            <div class="doctor-description">
+
+                <h3>
+                    Giới thiệu
+                </h3>
+
+                <p id="modalDescription">
+                    Thông tin bác sĩ sẽ được hiển thị tại đây.
+                </p>
+
+            </div>
+
+
+
+            <!-- Đặt lịch -->
+
+            <button
+                id="modalBookBtn"
+                class="modal-book-btn"
+                type="button"
+            >
+                Đặt lịch khám
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <div class="footer-content">
+
+
+            <div>
+
+                <div class="footer-logo">
+                    <span>+</span> MediCare
+                </div>
+
+                <p>
+                    Hệ thống đặt lịch khám bệnh trực tuyến
+                    tiện lợi và nhanh chóng.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Liên hệ
+                </h3>
+
+                <p>
+                    Hotline: 1900 1234
+                </p>
+
+                <p>
+                    Email: support@medicare.vn
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            © 2026 MediCare. All rights reserved.
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="bac-si.js"></script>
+
+</body>
+
+</html>
