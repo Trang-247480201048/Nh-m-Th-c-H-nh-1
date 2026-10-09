@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt lịch khám - MediCare</title>
+
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="dat-lich.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">
+        <span>+</span> MediCare
+    </div>
+
+    <nav>
+        <a href="trang-chu.html">Trang chủ</a>
+        <a href="dat-lich.html" class="active">Đặt lịch khám</a>
+        <a href="bac-si.html">Bác sĩ</a>
+        <a href="ho-so.html">Hồ sơ</a>
+    </nav>
+
+    <div class="auth-buttons">
+        <a href="dang-nhap.html" class="login-btn">Đăng nhập</a>
+        <a href="dang-ky.html" class="register-btn">Đăng ký</a>
+    </div>
+</header>
+
+<main>
+    <section class="booking-title">
+        <h1>Đặt lịch khám</h1>
+        <p>Chọn chuyên khoa, bác sĩ và thời gian khám phù hợp với bạn.</p>
+    </section>
+
+    <div class="booking-container">
+
+        <div class="progress-box">
+            <div class="progress-step active">
+                <span>1</span>
+                <p>Chọn bác sĩ</p>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>2</span>
+                <p>Chọn thời gian</p>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>3</span>
+                <p>Thông tin bệnh nhân</p>
+            </div>
+
+            <div class="progress-line"></div>
+
+            <div class="progress-step">
+                <span>4</span>
+                <p>Xác nhận</p>
+            </div>
+        </div>
+
+        <div class="booking-layout">
+
+            <section class="booking-box">
+                <div class="box-heading">
+                    <h2>Thông tin lịch khám</h2>
+                    <p>Vui lòng nhập đầy đủ thông tin bên dưới.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="specialty">Chuyên khoa</label>
+                    <select id="specialty">
+                        <option value="">-- Chọn chuyên khoa --</option>
+                        <option value="Nội khoa">Nội khoa</option>
+                        <option value="Ngoại khoa">Ngoại khoa</option>
+                        <option value="Nhi khoa">Nhi khoa</option>
+                        <option value="Tim mạch">Tim mạch</option>
+                        <option value="Da liễu">Da liễu</option>
+                        <option value="Tai - Mũi - Họng">Tai - Mũi - Họng</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="doctor">Bác sĩ</label>
+                    <select id="doctor" disabled>
+                        <option value="">-- Vui lòng chọn chuyên khoa trước --</option>
+                    </select>
+                </div>
+
+                <div id="doctor-preview" class="doctor-preview hidden">
+                    <div class="doctor-avatar" id="doctor-avatar">BS</div>
+
+                    <div class="doctor-info">
+                        <h3 id="doctor-name">-</h3>
+                        <p id="doctor-specialty">-</p>
+                        <span id="doctor-status">Đang làm việc</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Ngày khám</label>
+                    <input type="date" id="date">
+                    <small>Vui lòng chọn ngày khám từ hôm nay trở đi.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Khung giờ khám</label>
+
+                    <div id="time-list" class="time-list">
+                        <p class="time-empty">
+                            Vui lòng chọn bác sĩ và ngày khám trước.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-section-title">
+                    <h2>Thông tin bệnh nhân</h2>
+                </div>
+
+                <div class="form-group">
+                    <label for="patient-name">Họ và tên</label>
+                    <input
+                        type="text"
+                        id="patient-name"
+                        placeholder="Nhập họ và tên"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="patient-phone">Số điện thoại</label>
+                    <input
+                        type="tel"
+                        id="patient-phone"
+                        placeholder="Nhập số điện thoại"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">
+                        Lý do khám <span>(không bắt buộc)</span>
+                    </label>
+
+                    <textarea
+                        id="reason"
+                        rows="4"
+                        placeholder="Mô tả ngắn gọn triệu chứng hoặc lý do khám..."
+                    ></textarea>
+                </div>
+
+                <div class="booking-warning">
+                    <strong>Lưu ý:</strong>
+                    Vui lòng kiểm tra kỹ thông tin trước khi xác nhận đặt lịch.
+                </div>
+
+                <div class="confirmation-box">
+                    <h2>Xác nhận thông tin</h2>
+
+                    <div class="confirm-row">
+                        <span>Chuyên khoa</span>
+                        <strong id="confirm-specialty">-</strong>
+                    </div>
+
+                    <div class="confirm-row">
+                        <span>Bác sĩ</span>
+                        <strong id="confirm-doctor">-</strong>
+                    </div>
+
+                    <div class="confirm-row">
+                        <span>Ngày khám</span>
+                        <strong id="confirm-date">-</strong>
+                    </div>
+
+                    <div class="confirm-row">
+                        <span>Khung giờ</span>
+                        <strong id="confirm-time">-</strong>
+                    </div>
+                </div>
+
+                <button type="button" id="booking-btn" class="booking-btn">
+                    Xác nhận đặt lịch
+                </button>
+
+                <div id="success-box" class="success-box hidden">
+                    <div class="success-icon">✓</div>
+                    <h2>Đặt lịch thành công!</h2>
+                    <p>Lịch khám của bạn đã được ghi nhận.</p>
+                    <p>
+                        Mã lịch khám:
+                        <strong id="booking-code">-</strong>
+                    </p>
+                </div>
+            </section>
+
+            <aside class="booking-summary">
+                <div class="summary-card">
+                    <h2>Thông tin lịch khám</h2>
+
+                    <div class="summary-item">
+                        <span>Chuyên khoa</span>
+                        <strong id="summary-specialty">-</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>Bác sĩ</span>
+                        <strong id="summary-doctor">-</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>Ngày khám</span>
+                        <strong id="summary-date">-</strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>Khung giờ</span>
+                        <strong id="summary-time">-</strong>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div>
+            <h3>MediCare</h3>
+            <p>Hệ thống đặt lịch khám bệnh trực tuyến.</p>
+        </div>
+
+        <div>
+            <h3>Liên hệ</h3>
+            <p>Hotline: 1900 1234</p>
+            <p>Email: support@medicare.vn</p>
+        </div>
+    </div>
+</footer>
+
+<script src="dat-lich.js"></script>
+</body>
+</html>
