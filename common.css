@@ -3,42 +3,27 @@
    CSS DÙNG CHUNG CHO TOÀN BỘ HỆ THỐNG
    ========================================================= */
 
-
-/* =========================================================
-   1. RESET
-   ========================================================= */
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-
-/* =========================================================
-   2. BIẾN GIAO DIỆN CHUNG
-   ========================================================= */
-
 :root {
-    /* Màu chủ đạo */
     --primary: #087f8c;
     --primary-dark: #066d76;
     --primary-light: #e7f7f8;
 
-    /* Màu nền */
     --background: #f4f8fa;
     --white: #ffffff;
 
-    /* Màu chữ */
     --text: #263238;
     --text-light: #777777;
     --text-muted: #999999;
 
-    /* Viền */
     --border: #d5dfe2;
     --border-light: #eeeeee;
 
-    /* Trạng thái */
     --success: #2e9d58;
     --success-light: #eaf8ef;
 
@@ -47,19 +32,17 @@
 
     --danger: #c0392b;
 
-    /* Bo góc */
     --radius-small: 7px;
     --radius-medium: 10px;
     --radius-large: 12px;
 
-    /* Bóng */
     --shadow-small: 0 2px 10px rgba(0, 0, 0, 0.08);
     --shadow-medium: 0 4px 15px rgba(0, 0, 0, 0.07);
 }
 
 
 /* =========================================================
-   3. BODY
+   BODY
    ========================================================= */
 
 body {
@@ -71,7 +54,7 @@ body {
 
 
 /* =========================================================
-   4. HEADER
+   HEADER
    ========================================================= */
 
 .header {
@@ -89,13 +72,14 @@ body {
 
 
 /* =========================================================
-   5. LOGO
+   LOGO
    ========================================================= */
 
 .logo {
     font-size: 24px;
     font-weight: bold;
     color: var(--primary);
+    white-space: nowrap;
 }
 
 .logo span {
@@ -108,12 +92,13 @@ body {
 
 
 /* =========================================================
-   6. NAVIGATION
+   NAVIGATION
    ========================================================= */
 
 nav {
     display: flex;
     gap: 30px;
+    align-items: center;
 }
 
 nav a {
@@ -122,18 +107,66 @@ nav a {
     transition: 0.2s;
 }
 
-nav a.active,
-nav a:hover {
+nav a:hover,
+nav a.active {
     color: var(--primary);
     font-weight: bold;
 }
 
 
 /* =========================================================
-   7. BUTTON CHUNG
+   AUTH BUTTONS
    ========================================================= */
 
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-btn,
+.register-btn {
+    display: inline-block;
+
+    padding: 10px 18px;
+
+    border-radius: var(--radius-small);
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-btn {
+    background: var(--primary);
+    color: var(--white);
+    border: 1px solid var(--primary);
+}
+
+.login-btn:hover {
+    background: var(--primary-dark);
+}
+
+.register-btn {
+    background: var(--white);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.register-btn:hover {
+    background: var(--primary-light);
+}
+
+
+/* Nút chung */
+
 .btn {
+    display: inline-block;
+
     border: none;
     padding: 11px 20px;
 
@@ -147,9 +180,6 @@ nav a:hover {
     transition: 0.2s;
 }
 
-
-/* Nút chính */
-
 .btn-primary {
     background: var(--primary);
     color: var(--white);
@@ -158,9 +188,6 @@ nav a:hover {
 .btn-primary:hover {
     background: var(--primary-dark);
 }
-
-
-/* Nút phụ */
 
 .btn-secondary {
     background: var(--primary-light);
@@ -175,28 +202,8 @@ nav a:hover {
 }
 
 
-/* Nút đăng nhập */
-
-.login-btn {
-    background: var(--primary);
-    color: var(--white);
-
-    border: none;
-
-    padding: 11px 20px;
-
-    border-radius: var(--radius-small);
-
-    cursor: pointer;
-}
-
-.login-btn:hover {
-    background: var(--primary-dark);
-}
-
-
 /* =========================================================
-   8. TITLE
+   TITLE
    ========================================================= */
 
 .title {
@@ -215,56 +222,30 @@ nav a:hover {
 }
 
 
-/* Tiêu đề section */
-
-.section-title {
-    color: var(--primary);
-    margin-bottom: 8px;
-}
-
-.section-description {
-    color: var(--text-light);
-    margin-bottom: 25px;
-}
-
-
 /* =========================================================
-   9. CONTAINER
+   CONTAINER
    ========================================================= */
 
 .container {
     width: 1100px;
     max-width: calc(100% - 40px);
-
     margin: auto;
-
     padding-bottom: 80px;
 }
 
 
 /* =========================================================
-   10. CARD
-   DÙNG CHUNG CHO:
-   - Bác sĩ
-   - Chuyên khoa
-   - Hồ sơ bệnh nhân
-   - Lịch khám
-   - Thông tin tài khoản
-   - Admin
+   CARD
    ========================================================= */
 
 .card {
     background: var(--white);
-
     padding: 30px;
 
     border-radius: var(--radius-large);
 
     box-shadow: var(--shadow-medium);
 }
-
-
-/* Card nhỏ */
 
 .card-small {
     background: var(--white);
@@ -278,7 +259,7 @@ nav a:hover {
 
 
 /* =========================================================
-   11. FORM
+   FORM
    ========================================================= */
 
 .form-group {
@@ -287,14 +268,9 @@ nav a:hover {
 
 .form-group label {
     display: block;
-
     font-weight: bold;
-
     margin-bottom: 8px;
 }
-
-
-/* Input / Select / Textarea */
 
 input,
 select,
@@ -317,9 +293,6 @@ textarea {
     transition: 0.2s;
 }
 
-
-/* Khi click vào */
-
 input:focus,
 select:focus,
 textarea:focus {
@@ -328,76 +301,57 @@ textarea:focus {
     box-shadow: 0 0 0 2px rgba(8, 127, 140, 0.08);
 }
 
-
-/* Textarea */
-
 textarea {
     height: 100px;
     resize: none;
 }
 
-
-/* Hai cột */
-
 .form-row {
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 20px;
 }
 
 
 /* =========================================================
-   12. TABLE
-   DÙNG CHUNG CHO:
-   - Danh sách bác sĩ
-   - Lịch khám
-   - Bệnh nhân
-   - Admin
+   SECTION
    ========================================================= */
 
-.table-container {
-    width: 100%;
-
-    overflow-x: auto;
-
-    background: var(--white);
-
-    border-radius: var(--radius-medium);
-
-    box-shadow: var(--shadow-medium);
-}
-
-table {
-    width: 100%;
-
-    border-collapse: collapse;
-}
-
-th {
-    background: var(--primary-light);
-
+.section-title {
     color: var(--primary);
-
-    text-align: left;
-
-    padding: 14px;
+    margin-bottom: 8px;
 }
 
-td {
-    padding: 14px;
-
-    border-top: 1px solid var(--border-light);
-}
-
-tr:hover {
-    background: #f8fbfb;
+.section-description {
+    color: var(--text-light);
+    margin-bottom: 25px;
 }
 
 
 /* =========================================================
-   13. TRẠNG THÁI / BADGE
+   GRID
+   ========================================================= */
+
+.grid {
+    display: grid;
+    gap: 20px;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+
+/* =========================================================
+   BADGE
    ========================================================= */
 
 .badge {
@@ -411,32 +365,20 @@ tr:hover {
     font-weight: bold;
 }
 
-
-/* Thành công */
-
 .badge-success {
     background: var(--success-light);
     color: var(--success);
 }
-
-
-/* Cảnh báo */
 
 .badge-warning {
     background: var(--warning-light);
     color: var(--warning);
 }
 
-
-/* Không hoạt động */
-
 .badge-disabled {
     background: #eeeeee;
     color: var(--text-muted);
 }
-
-
-/* Trạng thái chính */
 
 .badge-primary {
     background: var(--primary-light);
@@ -445,15 +387,65 @@ tr:hover {
 
 
 /* =========================================================
-   14. ALERT / THÔNG BÁO
+   TABLE
    ========================================================= */
 
+.table-container {
+    width: 100%;
+    overflow-x: auto;
 
-/* Thông báo thông tin */
+    background: var(--white);
+
+    border-radius: var(--radius-medium);
+
+    box-shadow: var(--shadow-medium);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: var(--primary-light);
+    color: var(--primary);
+
+    text-align: left;
+
+    padding: 14px;
+}
+
+td {
+    padding: 14px;
+    border-top: 1px solid var(--border-light);
+}
+
+tr:hover {
+    background: #f8fbfb;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.search-box input {
+    flex: 1;
+}
+
+
+/* =========================================================
+   ALERT
+   ========================================================= */
 
 .info-box {
     display: flex;
-
     gap: 15px;
 
     background: var(--primary-light);
@@ -469,12 +461,8 @@ tr:hover {
 
 .info-box p {
     color: var(--text-light);
-
     font-size: 13px;
 }
-
-
-/* Cảnh báo */
 
 .warning-box {
     margin-top: 20px;
@@ -494,20 +482,14 @@ tr:hover {
 
 .warning-box p {
     margin-top: 6px;
-
     font-size: 13px;
 }
 
-
-/* Thành công */
-
 .success-box {
     display: flex;
-
     gap: 15px;
 
     margin-top: 20px;
-
     padding: 20px;
 
     background: var(--success-light);
@@ -524,7 +506,6 @@ tr:hover {
     flex-shrink: 0;
 
     background: var(--success);
-
     color: var(--white);
 
     border-radius: 50%;
@@ -536,20 +517,9 @@ tr:hover {
     font-size: 22px;
 }
 
-.success-box h3 {
-    color: #277c47;
-}
-
-.success-box p {
-    margin: 7px 0;
-
-    font-size: 13px;
-}
-
 
 /* =========================================================
-   15. CONFIRM BOX
-   DÙNG CHO CÁC KHUNG XÁC NHẬN
+   CONFIRM BOX
    ========================================================= */
 
 .confirm-box {
@@ -566,13 +536,11 @@ tr:hover {
 
 .confirm-box h3 {
     color: var(--primary);
-
     margin-bottom: 8px;
 }
 
 .confirm-box p {
     font-size: 14px;
-
     margin: 7px 0;
 }
 
@@ -588,72 +556,159 @@ tr:hover {
 
 
 /* =========================================================
-   16. AVATAR
-   DÙNG CHO BÁC SĨ / BỆNH NHÂN / TÀI KHOẢN
+   DOCTOR CARD
    ========================================================= */
 
-.avatar {
-    width: 50px;
-    height: 50px;
-
-    border-radius: 50%;
-
-    object-fit: cover;
+.doctor-card {
+    text-align: center;
 }
 
-.avatar-large {
-    width: 80px;
-    height: 80px;
+.doctor-card .avatar-large {
+    margin-bottom: 15px;
+}
 
-    border-radius: 50%;
+.doctor-card h3 {
+    margin-bottom: 5px;
+}
 
-    object-fit: cover;
+.doctor-card p {
+    color: var(--text-light);
+    font-size: 14px;
+    margin-bottom: 12px;
 }
 
 
 /* =========================================================
-   17. SEARCH
+   HOME PAGE
    ========================================================= */
 
-.search-box {
-    display: flex;
+.hero {
+    background: var(--white);
 
-    gap: 10px;
+    padding: 55px 50px;
 
-    margin-bottom: 25px;
-}
+    border-radius: var(--radius-large);
 
-.search-box input {
-    flex: 1;
-}
+    box-shadow: var(--shadow-medium);
 
-
-/* =========================================================
-   18. GRID
-   DÙNG CHO CARD BÁC SĨ / CHUYÊN KHOA...
-   ========================================================= */
-
-.grid {
     display: grid;
 
-    gap: 20px;
+    grid-template-columns: 1.2fr 1fr;
+
+    gap: 40px;
+
+    align-items: center;
 }
 
-.grid-2 {
-    grid-template-columns: repeat(2, 1fr);
+.hero h1 {
+    color: var(--primary);
+
+    font-size: 38px;
+
+    line-height: 1.25;
+
+    margin-bottom: 18px;
 }
 
-.grid-3 {
-    grid-template-columns: repeat(3, 1fr);
+.hero p {
+    color: var(--text-light);
+
+    margin-bottom: 25px;
+
+    font-size: 16px;
 }
 
-.grid-4 {
-    grid-template-columns: repeat(4, 1fr);
+.hero-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.home-section {
+    margin-top: 50px;
+}
+
+.feature-card {
+    text-align: center;
+}
+
+.feature-icon {
+    width: 55px;
+    height: 55px;
+
+    margin: 0 auto 15px;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+}
+
+.specialty-card {
+    transition: 0.2s;
+}
+
+.specialty-card:hover {
+    transform: translateY(-3px);
 }
 
 
 /* =========================================================
-   19. RESPONSIVE
+   FOOTER
+   ========================================================= */
+
+.footer {
+    background: #12383d;
+
+    color: white;
+
+    margin-top: 40px;
+
+    padding: 30px 70px;
+}
+
+.footer-content {
+    width: 1100px;
+    max-width: 100%;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+
+    gap: 40px;
+}
+
+.footer h3 {
+    margin-bottom: 10px;
+}
+
+.footer p,
+.footer a {
+    color: #d6e5e7;
+
+    font-size: 14px;
+
+    text-decoration: none;
+}
+
+.footer a {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.footer a:hover {
+    color: white;
+}
+
+
+/* =========================================================
+   RESPONSIVE
    ========================================================= */
 
 @media (max-width: 800px) {
@@ -664,6 +719,15 @@ tr:hover {
 
     nav {
         display: none;
+    }
+
+    .auth-buttons {
+        gap: 5px;
+    }
+
+    .login-btn,
+    .register-btn {
+        padding: 8px 12px;
     }
 
     .container {
@@ -677,6 +741,23 @@ tr:hover {
     .grid-2,
     .grid-3,
     .grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        grid-template-columns: 1fr;
+        padding: 35px 25px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .footer {
+        padding: 30px 20px;
+    }
+
+    .footer-content {
         grid-template-columns: 1fr;
     }
 }
