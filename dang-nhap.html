@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - MediCare</title>
+
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="dang-nhap.css">
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        <span>+</span> MediCare
+    </div>
+
+    <nav>
+        <a href="trang-chu.html">Trang chủ</a>
+        <a href="dat-lich.html">Đặt lịch khám</a>
+        <a href="bac-si.html">Bác sĩ</a>
+        <a href="ho-so.html">Hồ sơ</a>
+    </nav>
+
+    <div class="auth-buttons">
+        <a href="dang-nhap.html" class="login-btn active-auth">
+            Đăng nhập
+        </a>
+
+        <a href="dang-ky.html" class="register-btn">
+            Đăng ký
+        </a>
+    </div>
+
+</header>
+
+
+<main class="login-container">
+
+    <div class="login-card">
+
+        <div class="login-title">
+            <h1>Đăng nhập</h1>
+            <p>Đăng nhập để sử dụng hệ thống MediCare</p>
+        </div>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label for="username">
+                    Số điện thoại hoặc Email
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Nhập số điện thoại hoặc email"
+                >
+
+                <small class="error-message" id="usernameError"></small>
+            </div>
+
+
+            <div class="form-group">
+                <label for="password">
+                    Mật khẩu
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Nhập mật khẩu"
+                >
+
+                <small class="error-message" id="passwordError"></small>
+            </div>
+
+
+            <div class="login-options">
+
+                <label class="remember">
+                    <input type="checkbox" id="remember">
+                    <span>Ghi nhớ đăng nhập</span>
+                </label>
+
+                <a href="#" id="forgotPassword">
+                    Quên mật khẩu?
+                </a>
+
+            </div>
+
+
+            <button type="submit" class="login-submit">
+                Đăng nhập
+            </button>
+
+            <div id="loginMessage" class="login-message"></div>
+
+        </form>
+
+
+        <div class="register-link">
+            Chưa có tài khoản?
+            <a href="dang-ky.html">Đăng ký ngay</a>
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="footer-content">
+
+        <div>
+            <h3>MediCare</h3>
+            <p>
+                Hệ thống đặt lịch khám bệnh trực tuyến
+                nhanh chóng và tiện lợi.
+            </p>
+        </div>
+
+        <div>
+            <h3>Liên kết</h3>
+            <a href="trang-chu.html">Trang chủ</a>
+            <a href="dat-lich.html">Đặt lịch khám</a>
+            <a href="bac-si.html">Bác sĩ</a>
+        </div>
+
+        <div>
+            <h3>Hỗ trợ</h3>
+            <p>Hotline: 1900 0000</p>
+            <p>Email: support@medicare.vn</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 MediCare - Hệ thống quản lý đăng ký khám bệnh
+    </div>
+
+</footer>
+
+
+<script src="dang-nhap.js"></script>
+
+</body>
+</html>
