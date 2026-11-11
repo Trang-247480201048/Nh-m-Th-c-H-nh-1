@@ -1,0 +1,1100 @@
+
+/* =========================================================
+   MEDICARE ADMIN THEME
+   Giao diện chuẩn theo Dashboard - ảnh số 1
+   Chỉ điều chỉnh giao diện, không thay đổi chức năng.
+   ========================================================= */
+
+:root {
+    --admin-bg: #f4f7fb;
+    --admin-white: #ffffff;
+    --admin-teal: #078b8e;
+    --admin-teal-dark: #087f83;
+    --admin-teal-light: #e4f5f4;
+    --admin-text: #263746;
+    --admin-muted: #82909a;
+    --admin-border: #e8edf2;
+    --admin-border-light: #edf0f4;
+    --admin-table-head: #f7f9fb;
+    --admin-green-bg: #e9f7f5;
+    --admin-green: #248e80;
+    --admin-amber-bg: #fff5e3;
+    --admin-amber: #b28638;
+    --admin-red-bg: #fff0f0;
+    --admin-red: #c05b5b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   1. NỀN VÀ CHỮ CHUNG
+   ========================================================= */
+
+body.extra-page,
+body {
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-family: Arial, sans-serif;
+}
+
+/* =========================================================
+   2. KHUNG TRANG
+   ========================================================= */
+
+.extra-shell,
+.app-shell {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* =========================================================
+   3. SIDEBAR
+   ========================================================= */
+
+.extra-side,
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: var(--admin-white);
+    border-right: 1px solid var(--admin-border);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    z-index: 20;
+}
+
+.extra-brand,
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 7px 32px;
+}
+
+.extra-brand-mark,
+.brand-mark {
+    width: 43px;
+    height: 43px;
+    min-width: 43px;
+    border-radius: 12px;
+    background: var(--admin-teal-light);
+    color: var(--admin-teal);
+    display: grid;
+    place-items: center;
+}
+
+.extra-brand-name,
+.brand-name {
+    color: var(--admin-teal-dark);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.extra-nav,
+.nav-menu {
+    display: grid;
+    gap: 4px;
+}
+
+.extra-nav a,
+.extra-nav .nav-item,
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 42px;
+    padding: 12px 11px;
+    border-radius: 8px;
+    color: #536675;
+    font-size: 12px;
+    text-decoration: none;
+    transition: background .18s ease, color .18s ease;
+}
+
+.extra-nav a:hover,
+.extra-nav a.active,
+.extra-nav .active,
+.nav-item:hover,
+.nav-item.active {
+    background: var(--admin-teal-light);
+    color: var(--admin-teal-dark);
+}
+
+.extra-nav i,
+.nav-icon {
+    width: 17px;
+    text-align: center;
+}
+
+/* =========================================================
+   4. KHU VỰC NỘI DUNG VÀ TOPBAR
+   ========================================================= */
+
+.extra-main,
+.main-area {
+    flex: 1;
+    min-width: 0;
+    background: var(--admin-bg);
+}
+
+.extra-top,
+.topbar {
+    min-height: 70px;
+    height: auto;
+    background: var(--admin-white);
+    border-bottom: 1px solid var(--admin-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px;
+}
+
+.extra-content,
+.content {
+    width: 100%;
+    max-width: 1650px;
+    margin: 0 auto;
+    padding: 28px;
+}
+
+.extra-top,
+.extra-content,
+.extra-main {
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   5. TIÊU ĐỀ TRANG
+   ========================================================= */
+
+.extra-head,
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.extra-head h1,
+.page-heading h1 {
+    margin: 0 0 7px;
+    color: var(--admin-text);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.extra-head p,
+.page-heading p {
+    margin: 0;
+    color: var(--admin-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   6. THẺ THỐNG KÊ
+   ========================================================= */
+
+.extra-stats,
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.extra-stat,
+.stat-card {
+    background: var(--admin-white);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 19px;
+    min-width: 0;
+    box-shadow: none;
+}
+
+.extra-stat h3,
+.stat-card h3 {
+    color: var(--admin-muted);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.extra-stat strong,
+.stat-number {
+    color: var(--admin-text);
+    font-size: 27px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   7. PANEL / KHUNG NỘI DUNG
+   ========================================================= */
+
+.extra-panel,
+.extra-card,
+.panel {
+    background: var(--admin-white);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 19px;
+    box-shadow: none;
+}
+
+.extra-panel h2,
+.extra-card h2,
+.panel h2 {
+    color: var(--admin-text);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.extra-panel p,
+.extra-card p,
+.panel p {
+    color: var(--admin-muted);
+}
+
+.extra-grid {
+    gap: 18px;
+}
+
+/* =========================================================
+   8. BẢNG DỮ LIỆU
+   ========================================================= */
+
+.extra-table-wrap,
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--admin-border);
+    border-radius: 9px;
+}
+
+.extra-table,
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--admin-white);
+}
+
+.extra-table thead,
+.extra-table th,
+thead {
+    background: var(--admin-table-head);
+}
+
+.extra-table th,
+th {
+    padding: 14px 12px;
+    color: var(--admin-muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.extra-table td,
+td {
+    padding: 13px 12px;
+    color: var(--admin-text);
+    font-size: 12px;
+    border-top: 1px solid var(--admin-border-light);
+    vertical-align: middle;
+}
+
+.extra-table tbody tr:hover,
+tbody tr:hover {
+    background: #fafcfd;
+}
+
+/* =========================================================
+   9. NÚT BẤM
+   ========================================================= */
+
+.extra-page button,
+.extra-page input,
+.extra-page select,
+.extra-page textarea {
+    font-family: Arial, sans-serif;
+}
+
+.extra-page button,
+.btn,
+.btnx {
+    transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.extra-page button:not(.close):not(.modal-close),
+.btn,
+.btnx {
+    border-radius: 7px;
+}
+
+.extra-page button[type="submit"],
+.extra-page .primary,
+.extra-page .btn-primary,
+.extra-page .btnx:not(.light):not(.danger) {
+    background: var(--admin-teal);
+    border-color: var(--admin-teal);
+    color: #fff;
+}
+
+.extra-page button[type="submit"]:hover,
+.extra-page .primary:hover,
+.extra-page .btn-primary:hover,
+.extra-page .btnx:not(.light):not(.danger):hover {
+    background: var(--admin-teal-dark);
+    border-color: var(--admin-teal-dark);
+}
+
+.extra-page .btnx.light,
+.extra-page .btn-light {
+    background: #fff;
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text);
+}
+
+.extra-page .btnx.danger,
+.extra-page .btn-danger {
+    background: var(--admin-red-bg);
+    border: 1px solid #f3dada;
+    color: var(--admin-red);
+}
+
+/* =========================================================
+   10. Ô NHẬP LIỆU VÀ BỘ LỌC
+   ========================================================= */
+
+.extra-page input:not([type="checkbox"]):not([type="radio"]),
+.extra-page select,
+.extra-page textarea {
+    border: 1px solid var(--admin-border);
+    border-radius: 7px;
+    background: #fff;
+    color: var(--admin-text);
+    outline: none;
+}
+
+.extra-page input:focus,
+.extra-page select:focus,
+.extra-page textarea:focus {
+    border-color: #8fc9cb;
+    box-shadow: 0 0 0 3px rgba(7, 139, 142, .08);
+}
+
+/* =========================================================
+   11. NHÃN TRẠNG THÁI
+   ========================================================= */
+
+.extra-page .pillx,
+.extra-page .status-pill,
+.extra-page .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.extra-page .confirmed,
+.extra-page .status-confirmed {
+    background: var(--admin-green-bg);
+    color: var(--admin-green);
+}
+
+.extra-page .pending,
+.extra-page .status-pending {
+    background: var(--admin-amber-bg);
+    color: var(--admin-amber);
+}
+
+.extra-page .cancelled,
+.extra-page .status-cancelled {
+    background: var(--admin-red-bg);
+    color: var(--admin-red);
+}
+
+/* =========================================================
+   12. MODAL / POPUP
+   Không thay đổi cấu trúc hoặc JavaScript của modal.
+   ========================================================= */
+
+.extra-page .modal,
+.extra-page .profile-modal,
+.extra-page .modal-content {
+    border-radius: 12px;
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 15px 45px rgba(35, 55, 70, .16);
+}
+
+.extra-page .modal-header,
+.extra-page .modal-footer {
+    border-color: var(--admin-border-light);
+}
+
+/* =========================================================
+   13. LỊCH LÀM VIỆC
+   Giữ màu phân biệt trạng thái các ca.
+   ========================================================= */
+
+.extra-page .time-card,
+.extra-page .appointment-mini {
+    border-radius: 8px;
+}
+
+.extra-page .time-card.available {
+    background: #e9f7f5;
+    border-color: #ccebe5;
+}
+
+.extra-page .time-card.booked {
+    background: #fff5e3;
+    border-color: #f1dfb9;
+}
+
+.extra-page .time-card.off {
+    background: #f1f3f5;
+    border-color: #e3e8ec;
+}
+
+/* =========================================================
+   14. THÔNG BÁO
+   ========================================================= */
+
+.extra-page .flashx {
+    border-radius: 8px;
+}
+
+.extra-page .emptyx {
+    color: var(--admin-muted);
+}
+
+/* =========================================================
+   15. RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+    .extra-side,
+    .sidebar {
+        width: 230px;
+        min-width: 230px;
+    }
+
+    .extra-content,
+    .content {
+        padding: 22px 20px;
+    }
+
+    .extra-stats,
+    .stats-grid {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 850px) {
+    .extra-side,
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: -260px;
+        width: 250px;
+        min-width: 250px;
+        height: 100vh;
+        transition: left .2s ease;
+        box-shadow: 8px 0 25px rgba(35, 55, 70, .08);
+    }
+
+    .extra-side.open,
+    .sidebar.open {
+        left: 0;
+    }
+
+    .extra-main,
+    .main-area {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .extra-top,
+    .topbar {
+        padding: 12px 18px;
+    }
+
+    .extra-content,
+    .content {
+        padding: 20px 16px;
+    }
+
+    .extra-stats,
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .extra-head,
+    .page-heading {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 560px) {
+    .extra-top,
+    .topbar {
+        min-height: 60px;
+        padding: 10px 13px;
+    }
+
+    .extra-content,
+    .content {
+        padding: 16px 12px;
+    }
+
+    .extra-head,
+    .page-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .extra-head h1,
+    .page-heading h1 {
+        font-size: 22px;
+    }
+
+    .extra-stats,
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .extra-stat,
+    .stat-card {
+        padding: 13px;
+    }
+
+    .extra-panel,
+    .extra-card,
+    .panel {
+        padding: 14px;
+    }
+}
+
+/* =========================================================
+   APPOINTMENT PAGE
+   Đồng bộ trang lịch hẹn theo Dashboard
+   ========================================================= */
+
+/* Nền và khung chính */
+body.extra-page {
+    background: #f4f7fb !important;
+    color: #263746 !important;
+    font-family: Arial, sans-serif !important;
+}
+
+.extra-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.extra-side {
+    width: 250px !important;
+    min-width: 250px !important;
+    flex-shrink: 0;
+    background: #fff !important;
+    border-right: 1px solid #e8edf2 !important;
+    padding: 24px 16px !important;
+}
+
+.extra-brand {
+    gap: 10px;
+    margin-bottom: 32px;
+    font-size: 22px !important;
+    color: #087f83 !important;
+}
+
+.extra-brand > span {
+    width: 43px;
+    height: 43px;
+    min-width: 43px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #e4f5f4;
+    color: #078b8e;
+    font-size: 23px;
+}
+
+.extra-brand small {
+    font-size: 9px;
+    color: #82909a;
+}
+
+.extra-nav {
+    display: grid;
+    gap: 4px;
+}
+
+.extra-nav a {
+    min-height: 42px;
+    padding: 12px 11px !important;
+    margin: 0 !important;
+    border-radius: 8px;
+    gap: 11px;
+    font-size: 12px !important;
+    color: #536675 !important;
+    transition: .18s;
+}
+
+.extra-nav a:hover,
+.extra-nav a.active {
+    background: #e4f5f4 !important;
+    color: #087f83 !important;
+    font-weight: 600;
+}
+
+/* Khu vực nội dung */
+.extra-main {
+    flex: 1;
+    min-width: 0;
+    background: #f4f7fb;
+}
+
+.extra-top {
+    min-height: 70px;
+    background: #fff;
+    border-bottom: 1px solid #edf0f4;
+    padding: 12px 28px !important;
+    font-size: 12px;
+}
+
+.extra-user {
+    gap: 14px;
+}
+
+.extra-user form {
+    margin: 0;
+}
+
+.extra-content {
+    width: 100%;
+    max-width: 1650px !important;
+    margin: 0 auto;
+    padding: 28px !important;
+}
+
+/* Tiêu đề */
+.extra-head {
+    margin-bottom: 24px !important;
+}
+
+.extra-page h1 {
+    font-size: 26px !important;
+    font-weight: 700;
+    color: #263746 !important;
+    letter-spacing: -.4px;
+}
+
+.subtitle {
+    font-size: 12px !important;
+    color: #82909a !important;
+    line-height: 1.6;
+}
+
+/* Thẻ thống kê */
+.statsx {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px !important;
+    margin-bottom: 20px !important;
+}
+
+.statx {
+    background: #fff;
+    border: 1px solid #e8edf2;
+    border-radius: 12px;
+    padding: 19px !important;
+    margin-bottom: 0 !important;
+    box-shadow: none;
+}
+
+.statx span {
+    font-size: 12px;
+    color: #82909a;
+}
+
+.statx strong {
+    font-size: 27px;
+    font-weight: 700 !important;
+    color: #263746;
+    margin: 12px 0 8px !important;
+}
+
+.statx small {
+    font-size: 11px;
+    color: #82909a;
+}
+
+/* Khung bộ lọc và bảng */
+.panelx {
+    background: #fff;
+    border: 1px solid #e8edf2;
+    border-radius: 12px;
+    padding: 19px !important;
+    margin-bottom: 18px;
+    box-shadow: none;
+}
+
+.toolsx {
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.toolsx input,
+.toolsx select {
+    min-height: 39px;
+    padding: 9px 12px !important;
+    border: 1px solid #e8edf2 !important;
+    border-radius: 7px !important;
+    font-size: 12px;
+}
+
+.toolsx input:focus,
+.toolsx select:focus {
+    border-color: #8fc9cb !important;
+    outline: none;
+}
+
+/* Bảng */
+.tablex {
+    border: 1px solid #e8edf2;
+    border-radius: 9px;
+    overflow-x: auto;
+}
+
+.tablex table {
+    width: 100%;
+    min-width: 820px;
+    border-collapse: collapse;
+}
+
+.tablex th {
+    background: #f7f9fb;
+    color: #82909a;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 14px 12px;
+}
+
+.tablex td {
+    padding: 14px 12px;
+    border-top: 1px solid #edf0f4;
+    color: #263746;
+    font-size: 12px;
+}
+
+.tablex tbody tr:hover {
+    background: #fafcfd;
+}
+
+.tablex td strong {
+    color: #263746;
+    font-weight: 600;
+}
+
+.tablex td small {
+    color: #82909a;
+    font-size: 10px;
+}
+
+/* Nút */
+.extra-page .btnx {
+    border-radius: 7px;
+    padding: 10px 13px;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    transition: .18s;
+}
+
+.extra-page .btnx:not(.light) {
+    background: #078b8e;
+    border: 1px solid #078b8e;
+    color: #fff;
+}
+
+.extra-page .btnx:not(.light):hover {
+    background: #087f83;
+    border-color: #087f83;
+}
+
+.extra-page .btnx.light {
+    background: #fff;
+    border: 1px solid #e8edf2;
+    color: #536675;
+}
+
+.extra-page .btnx.light:hover {
+    background: #f7f9fb;
+    border-color: #cbd8df;
+}
+
+/* Trạng thái */
+.pillx {
+    border-radius: 6px !important;
+    padding: 5px 9px;
+    font-size: 10px;
+}
+
+.pillx.pending {
+    background: #fff5e3;
+    color: #b28638;
+}
+
+.pillx.off {
+    background: #fff0f0;
+    color: #c05b5b;
+}
+
+.fee {
+    color: #087f83;
+}
+
+/* Form tạo lịch */
+.formx {
+    gap: 14px;
+}
+
+.formx label {
+    font-size: 12px;
+    color: #536675;
+}
+
+.formx input,
+.formx select {
+    min-height: 39px;
+    padding: 9px 11px;
+    font-size: 12px;
+}
+
+.price-note {
+    font-size: 11px;
+    color: #82909a;
+}
+
+.emptyx {
+    color: #82909a;
+    font-size: 12px;
+}
+
+.footx {
+    color: #82909a;
+    font-size: 10px;
+}
+
+/* Responsive */
+@media (max-width: 1150px) {
+    .extra-side {
+        width: 230px !important;
+        min-width: 230px !important;
+    }
+
+    .extra-content {
+        padding: 22px 20px !important;
+    }
+}
+
+@media (max-width: 850px) {
+    .extra-side {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: -260px;
+        width: 250px !important;
+        min-width: 250px !important;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 100;
+        transition: left .2s ease;
+        box-shadow: 8px 0 25px rgba(35, 55, 70, .08);
+    }
+
+    .extra-side.open {
+        left: 0;
+    }
+
+    .extra-main {
+        width: 100%;
+    }
+
+    .statsx {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .extra-content {
+        padding: 16px 12px !important;
+    }
+
+    .extra-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .extra-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .statsx {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .formx {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* SIDEBAR CHUNG - THEO GIAO DIỆN DASHBOARD */
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: #fff;
+    border-right: 1px solid #e8edf2;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 32px;
+}
+
+.brand-mark {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e4f5f4;
+    color: #078b8e;
+    border-radius: 12px;
+    font-size: 25px;
+}
+
+.brand-name {
+    color: #087f83;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.brand-sub {
+    color: #87939c;
+    font-size: 9px;
+    margin-top: 4px;
+    letter-spacing: .5px;
+}
+
+.nav-label {
+    color: #9aa5ad;
+    font-size: 9px;
+    font-weight: 700;
+    margin: 0 0 12px 9px;
+    letter-spacing: .6px;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 12px 11px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #697680;
+    font-size: 12px;
+    transition: .2s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #e4f5f4;
+    color: #087f83;
+    font-weight: 600;
+}
+
+.nav-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.nav-count {
+    margin-left: auto;
+    padding: 3px 7px;
+    border-radius: 12px;
+    background: #fceaea;
+    color: #bc5a5a;
+    font-size: 10px;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 16px 12px;
+    background: #f5f9fb;
+    border: 1px solid #edf1f4;
+    border-radius: 10px;
+}
+
+.support-icon {
+    color: #078b8e;
+    font-size: 23px;
+    margin-bottom: 9px;
+}
+
+.sidebar-bottom strong {
+    font-size: 12px;
+}
+
+.sidebar-bottom p {
+    color: #84919b;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.sidebar-bottom a {
+    color: #078b8e;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 18px;
+    color: #718079;
+    font-size: 10px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #20b486;
+}

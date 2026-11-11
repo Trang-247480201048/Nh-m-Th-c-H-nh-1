@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Medicare Admin{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        {% block page_css %}{% endblock %}
+    </style>
+</head>
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <a href="{{ url_for('dashboard') }}" class="brand">
+            <span class="brand-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </span>
+            <span>
+                <strong>Medicare</strong>
+                <small>ADMINISTRATION</small>
+            </span>
+        </a>
+
+        <div class="sidebar-label">MENU CHÍNH</div>
+
+        <nav class="nav-menu">
+            <a href="{{ url_for('dashboard') }}"
+               class="nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Tổng quan</span>
+            </a>
+
+            <a href="{{ url_for('appointments_page') }}"
+               class="nav-item {% if active_page == 'appointments' %}active{% endif %}">
+                <i class="fa-regular fa-calendar-check"></i>
+                <span>Quản lý lịch hẹn</span>
+                {% if pending_count %}
+                <span class="nav-count">{{ pending_count }}</span>
+                {% endif %}
+            </a>
+
+            <a href="{{ url_for('doctors_page') }}"
+               class="nav-item {% if active_page == 'doctors' %}active{% endif %}">
+                <i class="fa-solid fa-user-doctor"></i>
+                <span>Quản lý bác sĩ</span>
+            </a>
+
+            <a href="{{ url_for('schedule_page') }}"
+               class="nav-item {% if active_page == 'schedule' %}active{% endif %}">
+                <i class="fa-regular fa-clock"></i>
+                <span>Lịch làm việc</span>
+            </a>
+
+            <a href="{{ url_for('patients') }}"
+               class="nav-item {% if active_page == 'patients' %}active{% endif %}">
+                <i class="fa-solid fa-users"></i>
+                <span>Quản lý bệnh nhân</span>
+            </a>
+
+            
+            <a href="{{ url_for('specialties_page') }}"
+                class="nav-item {% if active_page == 'specialties' %}active{% endif %}">
+                <i class="fa-solid fa-stethoscope"></i>
+                <span>Chuyên khoa & dịch vụ</span>
+            </a>
+
+
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Tài khoản & phân quyền</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="support-card">
+                <div class="support-icon">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <strong>Cần hỗ trợ?</strong>
+                <p>Liên hệ bộ phận kỹ thuật khi gặp sự cố.</p>
+            </div>
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                Hệ thống quản lý Medicare
+            </div>
+
+            <div class="sidebar-footer">© 2026 Medicare</div>
+        </div>
+    </aside>
+
+    <main class="main-area">
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="breadcrumb">
+                    <span>Medicare</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <strong>{% block breadcrumb %}Tổng quan{% endblock %}</strong>
+                </div>
+                <p class="topbar-subtitle">
+                    Hệ thống quản lý đặt lịch khám
+                </p>
+            </div>
+
+            <div class="topbar-right">
+                <div class="today-date">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span id="currentDate"></span>
+                </div>
+
+                <button class="icon-button" type="button"
+                        title="Thông báo"
+                        onclick="showToast('Bạn đang xem thông báo hệ thống.')">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
+
+                <div class="user-profile">
+                    <div class="avatar">
+                        {{ session.get('admin_username', 'A')[0] | upper }}
+                    </div>
+                    <div class="user-info">
+                        <strong>{{ session.get('admin_username', 'admin') }}</strong>
+                        <small>Quản trị viên</small>
+                    </div>
+                </div>
+
+                <form action="{{ url_for('logout') }}" method="POST">
+                    <button class="logout-button" type="submit"
+                            title="Đăng xuất">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </form>
+            </div>
+        </header>
+
+        <section class="page-content">
+            {% if db_error %}
+            <div class="flash-message error">
+                <span>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    {{ db_error }}
+                </span>
+            </div>
+            {% endif %}
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    <span>{{ message }}</span>
+                    <button type="button"
+                            onclick="this.parentElement.remove()">×</button>
+                </div>
+                {% endfor %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </section>
+    </main>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<script>
+const dateElement = document.getElementById("currentDate");
+
+if (dateElement) {
+    dateElement.textContent = new Intl.DateTimeFormat("vi-VN", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    }).format(new Date());
+}
+
+function showToast(message, type = "success") {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    toast.className = "toast " + type;
+
+    const icon = document.createElement("i");
+    icon.className = type === "error"
+        ? "fa-solid fa-circle-exclamation"
+        : "fa-solid fa-circle-check";
+
+    const text = document.createElement("span");
+    text.textContent = message;
+
+    toast.append(icon, text);
+    container.appendChild(toast);
+
+    setTimeout(() => toast.remove(), 3500);
+}
+</script>
+
+{% block page_js %}{% endblock %}
+</body>
+</html>

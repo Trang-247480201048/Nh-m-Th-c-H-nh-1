@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MediCare – Cổng thông tin bác sĩ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#0f8f80;--teal-d:#0b6f63;--teal-l:#e3f4f1;--bg:#f2f7f7;--ink:#14282b;--mut:#7a8f92;--line:#e3ecec;--amber:#fdf1d3;--amber-t:#a9741a;--blue:#e8eef7;--blue-t:#4a6288;--red:#e5484d;--r:16px}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:13px}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{background:#fff;border-right:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:20px}
+.brand i{width:44px;height:44px;border-radius:12px;background:var(--teal-l);color:var(--teal);display:grid;place-items:center}
+.brand i svg{width:22px;height:22px}
+.brand b{font-size:19px;color:var(--teal-d);display:block}.brand small{font-size:9.5px;color:var(--teal);font-weight:600}
+.grp{font-size:11px;color:var(--mut);font-weight:600;margin:0 0 6px 8px}
+nav button{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:12px;font-size:14px;color:#4a5f62;text-align:left}
+nav button:hover{background:var(--bg)}
+nav button.on{background:var(--teal-l);color:var(--teal-d);font-weight:600}
+nav .bd{margin-left:auto;background:#fde8e8;color:var(--red);border-radius:99px;font-size:11px;padding:2px 8px}
+.help{margin-top:auto;border:1px solid var(--line);border-radius:var(--r);padding:14px;background:var(--bg)}
+.help h4{font-size:13.5px;margin:10px 0 6px}.help p{color:var(--mut);font-size:13px;line-height:1.5}.help a{color:var(--teal-d);font-weight:600;display:inline-flex;gap:6px;margin-top:12px;text-decoration:none}
+.status{font-size:12px;color:var(--mut);display:flex;gap:8px;align-items:center;margin-top:12px}.status i{width:10px;height:10px;border-radius:50%;background:#2fbf71}
+main{min-width:0}
+header{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:16px}
+.crumb{color:var(--mut)}.crumb b{color:var(--ink);font-weight:500}
+.sp{flex:1}.today{color:var(--mut)}
+.ib{width:38px;height:38px;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;position:relative;background:#fff}
+.ib .dot{position:absolute;top:8px;right:10px;width:8px;height:8px;background:var(--red);border-radius:50%}
+.me{display:flex;gap:12px;align-items:center}.av{width:36px;height:36px;border-radius:50%;background:var(--teal-l);color:var(--teal-d);display:grid;place-items:center;font-weight:700}
+.me b{display:block}.me small{color:var(--mut);font-size:12px}
+.out{display:flex;gap:8px;align-items:center;padding:9px 14px;border:1px solid var(--line);border-radius:12px;color:#4a5f62}
+.wrap{padding:24px 28px}
+.hello{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+.hello small{color:var(--teal);font-weight:600;font-size:12px}
+h1{font-size:26px;margin:8px 0 6px;font-weight:600}.hello p{color:var(--mut)}.hello p b{color:var(--teal-d)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;font-weight:500}
+.btn.pri{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600}.btn.pri:hover{background:var(--teal-d)}
+.btn:disabled{opacity:.5;cursor:wait}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.st{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;gap:12px;align-items:flex-start}
+.st i{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--teal-l);color:var(--teal)}
+.st.a i{background:var(--amber);color:var(--amber-t)}.st.b i{background:var(--blue);color:var(--blue-t)}
+.st small{font-size:10px;color:var(--mut);font-weight:600;display:block}.st strong{font-size:26px;font-weight:600;display:block;line-height:1.2}.st span{font-size:11px;color:var(--mut)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;align-items:start}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card h3{font-size:16px;font-weight:500}.card .sub{color:var(--mut);font-size:12px;margin:4px 0 12px}
+.ch{display:flex;justify-content:space-between;align-items:baseline}.ch a{color:var(--teal-d);font-weight:600;font-size:12.5px;text-decoration:none}
+.tabs{display:flex;gap:24px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.tabs button{padding:10px 0;color:var(--mut);font-size:13px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--teal-d);font-weight:600;border-color:var(--teal)}
+.tabs em{font-style:normal;background:var(--teal-l);border-radius:99px;padding:1px 7px;font-size:11px;margin-left:4px}
+.row{display:grid;grid-template-columns:54px 40px minmax(0,1fr) auto auto auto;gap:12px;align-items:center;padding:12px 10px;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}.row.next{background:#f1faf8;border:1px solid #cfe9e4;border-radius:14px}
+.tm b{font-size:15px;display:block}.tm small{color:var(--mut);font-size:11px}
+.pa{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:700;background:var(--teal-l);color:var(--teal-d)}
+.pn b{font-weight:600}.pn small{color:var(--mut);margin-left:6px;font-size:11px}.pn p{color:#4a5f62;margin:2px 0;font-size:12.5px}
+.pn .w{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:12px}.pn .w svg{width:15px;height:15px}
+.tag{font-size:11px;padding:4px 9px;border-radius:99px;white-space:nowrap;background:#e8f3ef;color:var(--teal-d)}
+.tag.waiting{background:var(--amber);color:var(--amber-t)}.tag.confirmed{background:var(--blue);color:var(--blue-t)}.tag.in_progress{background:#dff1fb;color:#1a6e99}
+.lnk{color:var(--teal-d);font-weight:600;font-size:12.5px}
+.empty{padding:40px;text-align:center;color:var(--mut)}
+.nx .top{display:flex;justify-content:space-between;align-items:center}.nx small{font-size:11px;color:var(--teal);font-weight:600}
+.nx h3{margin:10px 0}.pbox{display:flex;gap:12px;align-items:center;background:var(--bg);padding:12px;border-radius:14px;margin-bottom:12px}
+.kv{padding:9px 0;border-bottom:1px solid var(--line)}.kv small{display:block;font-size:10.5px;color:var(--mut);font-weight:600;margin-bottom:4px}
+.nx .btn{width:100%;margin-top:14px;padding:11px}.nx .lnk{display:block;text-align:center;margin-top:14px;font-size:12.5px}
+.note{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.note:last-child{border:0}
+.note i{width:36px;height:36px;border-radius:10px;background:var(--teal-l);color:var(--teal);display:grid;place-items:center}.note.a i{background:var(--amber);color:var(--amber-t)}.note.b i{background:var(--blue);color:var(--blue-t)}
+.note b{font-size:13px;display:block}.note small{color:var(--mut);font-size:12px}
+.hide{display:none!important}
+.mask{position:fixed;inset:0;background:rgba(20,40,43,.45);display:grid;place-items:center;padding:20px;z-index:20}
+.modal{background:#fff;border-radius:20px;padding:28px;width:min(560px,100%);max-height:90vh;overflow:auto}
+.modal h3{font-size:20px;margin-bottom:16px}.modal label{display:block;font-size:12px;color:var(--mut);font-weight:600;margin:14px 0 6px}
+.modal textarea{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:12px;min-height:80px;resize:vertical}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;z-index:30}
+.toast.err{background:var(--red)}
+@media(max-width:1100px){.cols{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:800px){.app{grid-template-columns:1fr}aside{position:static;height:auto}.help{display:none}.wrap{padding:20px}header{padding:0 20px}.row{grid-template-columns:60px 1fr;row-gap:10px}.row .pa{display:none}.row>*:nth-child(n+4){grid-column:2}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><i><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></i><div><b>MediCare</b><small>CỔNG THÔNG TIN BÁC SĨ</small></div></div>
+  <div class="grp">KHÔNG GIAN LÀM VIỆC</div>
+  <nav id="nav"></nav>
+  <div class="help"><svg viewBox="0 0 24 24" style="color:var(--teal)"><path d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    <h4>Cần hỗ trợ vận hành?</h4><p>Đội ngũ MediCare luôn sẵn sàng hỗ trợ bác sĩ.</p><a href="mailto:support@medicare.vn">Liên hệ hỗ trợ</a></div>
+  <div class="status"><i></i>Hệ thống hoạt động ổn định</div>
+</aside>
+<main>
+  <header>
+    <div class="crumb">Bác sĩ &nbsp;/&nbsp; <b id="crumb">Cổng làm việc</b></div><div class="sp"></div>
+    <div class="today" id="todayTxt"></div>
+    <button class="ib" id="bell" aria-label="Thông báo"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></button>
+    <div class="me"><div class="av" id="meAv">BS</div><div><b id="meName">…</b><small id="meSpec"></small></div></div>
+    <button class="out" id="logout"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Đăng xuất</button>
+  </header>
+  <div class="wrap">
+    <section id="v-overview">
+      <div class="hello"><div><small id="dow"></small><h1 id="greet"></h1><p id="subGreet"></p></div>
+        <button class="btn" data-go="appointments"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Xem lịch tuần</button></div>
+      <div class="stats" id="stats"></div>
+    </section>
+    <section id="v-stub" class="hide"><div class="card empty" id="stubTxt"></div></section>
+    <div class="cols" id="cols">
+      <div class="card" id="listCard">
+        <div class="ch"><h3 id="listHeading">Lịch khám của tôi</h3><input type="date" id="dateIn" class="hide" style="font:inherit;padding:8px 12px;border:1px solid var(--line);border-radius:10px"><a href="#" data-go="appointments" id="seeAll">Xem tất cả</a></div>
+        <p class="sub">Các lịch đã được admin xác nhận và chuyển đến bác sĩ</p>
+        <div class="tabs" id="tabs"></div><div id="list"></div>
+      </div>
+      <div id="side">
+        <div class="card nx" id="next"></div>
+        <div class="card" style="margin-top:22px"><h3>Cần chú ý</h3><p class="sub">Thông tin hỗ trợ trong ngày</p><div id="notes"></div></div>
+      </div>
+    </div>
+    <section id="completedSection" class="card" style="margin-top:18px">
+      <div class="ch"><h3>Lịch đã khám · Lịch sử hoàn tất</h3><span style="color:var(--mut);font-size:12px">Tất cả ngày · Lưu trên SQL Server</span></div>
+      <p class="sub">Các ca đã hoàn thành của bác sĩ, kể cả những ngày trước</p>
+      <div id="completedList"><div class="empty">Đang tải lịch đã khám...</div></div>
+    </section>
+    <section id="upcomingSection" class="card" style="margin-top:18px">
+      <div class="ch"><h3>Lịch khám sắp tới (7 ngày)</h3><span style="color:var(--mut);font-size:12px">Từ ngày mai · Đã được Admin xác nhận</span></div>
+      <p class="sub">Lịch của bác sĩ đang đăng nhập, lấy trực tiếp từ SQL Server</p>
+      <div id="upcomingList"><div class="empty">Đang tải lịch sắp tới...</div></div>
+    </section>
+  </div>
+</main>
+</div>
+
+<script>
+/* ================= CẤU HÌNH ================= */
+const CONFIG = {
+  API_BASE: '/api',        // đổi thành URL backend, ví dụ http://localhost:8080/api
+  USE_MOCK: false,          // đặt false khi nối backend thật
+  LOGIN_PAGE: '/doctor/login'
+};
+/* Endpoint backend cần có (đổi tên cho khớp API của bạn):
+   GET  /doctor/me                          -> {id,name,shortName,specialty}
+   GET  /doctor/appointments?date=YYYY-MM-DD-> [appointment]   (chỉ lịch admin đã xác nhận, gán cho bác sĩ này)
+   POST /doctor/appointments/:id/start      -> bắt đầu khám (status = in_progress)
+   POST /doctor/appointments/:id/complete   -> body {diagnosis,prescription,note}
+   GET  /doctor/patients/:id/records        -> [{date,diagnosis}]
+   appointment = {id,time,endTime,status,room,reason,history,checkinAt,recordDone,
+                  patient:{id,code,name,gender,age}}
+   status: confirmed | waiting (đã check-in) | in_progress | completed */
+
+/* ================= API ================= */
+async function api(path, opts = {}) {
+  if (CONFIG.USE_MOCK) return mock(path, opts);
+  const res = await fetch(CONFIG.API_BASE + path, {
+    method: opts.method || 'GET',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if (res.redirected && res.url.includes('/doctor/login')) { throw new Error('Phiên đăng nhập đã hết hạn. Hãy tải lại trang và đăng nhập.'); }
+  if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || 'Lỗi ' + res.status); }
+  return res.status === 204 ? null : res.json();
+}
+function logout() { const f = document.createElement('form'); f.method = 'POST'; f.action = '/doctor/logout'; document.body.appendChild(f); f.submit(); }
+
+/* ================= DỮ LIỆU MẪU (khi USE_MOCK = true) ================= */
+const P = (id, code, name, gender, age) => ({ id, code, name, gender, age });
+let MOCK = [
+  { id: 1, time: '08:00', endTime: '08:30', status: 'completed', room: 'P. 203', reason: 'Đau đầu, chóng mặt', history: 'Không', recordDone: false, patient: P(1, 'BN-02101', 'Nguyễn Minh Anh', 'Nữ', 32) },
+  { id: 2, time: '09:00', endTime: '09:30', status: 'waiting', room: 'P. 203', reason: 'Tái khám huyết áp', history: 'Tăng huyết áp độ I', checkinAt: '08:42', patient: P(2, 'BN-02458', 'Trần Quốc Huy', 'Nam', 45) },
+  { id: 3, time: '10:00', endTime: '10:30', status: 'confirmed', room: 'P. 204', reason: 'Ho và đau họng', history: 'Không', patient: P(3, 'BN-02460', 'Lê Thu Trang', 'Nữ', 27) },
+  { id: 4, time: '11:00', endTime: '11:30', status: 'confirmed', room: 'P. 203', reason: 'Đau vùng thượng vị', history: 'Viêm dạ dày', patient: P(4, 'BN-02475', 'Phạm Đức Long', 'Nam', 51) },
+  { id: 5, time: '14:00', endTime: '14:30', status: 'confirmed', room: 'P. 204', reason: 'Mệt mỏi, mất ngủ', history: 'Không', patient: P(5, 'BN-02490', 'Võ Ngọc Mai', 'Nữ', 38) }
+];
+async function mock(path, opts) {
+  await new Promise(r => setTimeout(r, 150));
+  if (path === '/doctor/me') return { id: 1, name: 'BS. An Lê', shortName: 'An', specialty: 'Nội tổng quát' };
+  if (path.startsWith('/doctor/appointments?')) return MOCK;
+  let m;
+  if ((m = path.match(/^\/doctor\/appointments\/(\d+)\/start$/))) { MOCK.find(a => a.id == m[1]).status = 'in_progress'; return {}; }
+  if ((m = path.match(/^\/doctor\/appointments\/(\d+)\/complete$/))) { const a = MOCK.find(a => a.id == m[1]); a.status = 'completed'; a.recordDone = true; return {}; }
+  if (path.match(/\/records$/)) return [{ date: '15/09/2026', diagnosis: 'Tăng huyết áp độ I, kê amlodipine' }];
+  return [];
+}
+
+/* ================= TRẠNG THÁI ================= */
+const S = { me: null, list: [], upcoming: [], completed: [], tab: 'all', view: 'overview', date: new Date().toLocaleDateString('en-CA') };
+const LBL = { completed: 'Đã khám', waiting: 'Đang chờ', confirmed: 'Đã xác nhận', in_progress: 'Đang khám' };
+const TABS = [['all', 'Tất cả'], ['waiting', 'Đang chờ'], ['confirmed', 'Sắp tới'], ['completed', 'Đã khám']];
+const NAV = [['overview', 'Tổng quan', 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z'], ['appointments', 'Lịch khám của tôi', 'M3 4h18v18H3zM16 2v4M8 2v4M3 10h18'],
+  ['patients', 'Bệnh nhân', 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8'],
+  ['records', 'Hồ sơ khám bệnh', 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h8'], ['schedule', 'Lịch làm việc', 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2']];
+const IC = {
+  cal: 'M3 4h18v18H3zM16 2v4M8 2v4M3 10h18', clock: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2', check: 'M20 6 9 17l-5-5',
+  pin: 'M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6',
+  steth: 'M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 12 0V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3M8 15v1a6 6 0 0 0 12 0v-3M20 11a2 2 0 1 0 0 4 2 2 0 0 0 0-4', doc: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6'
+};
+const ico = p => `<svg viewBox="0 0 24 24"><path d="${IC[p] || p}"/></svg>`;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ini = n => n.trim().split(/\s+/).slice(-2).map(w => w[0]).join('').toUpperCase();
+function toast(msg, err) { const t = document.createElement('div'); t.className = 'toast' + (err ? ' err' : ''); t.textContent = msg; document.body.append(t); setTimeout(() => t.remove(), 3000); }
+const mins = t => { const [h, m] = t.split(':'); return h * 60 + +m; };
+const nowMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
+
+/* ================= TẢI DỮ LIỆU ================= */
+async function loadList() {
+  try { S.list = (await api('/doctor/appointments?date=' + S.date)) || []; }
+  catch (e) { S.list = []; toast(e.message, true); }
+  S.list.sort((a, b) => a.time.localeCompare(b.time)); render();
+}
+async function loadUpcoming() {
+  try {
+    S.upcoming = await api('/doctor/upcoming');
+    if (!Array.isArray(S.upcoming)) throw new Error('Dữ liệu lịch sắp tới không hợp lệ');
+  } catch (e) {
+    S.upcoming = [];
+    $('upcomingList').textContent = 'Không tải được lịch sắp tới: ' + e.message;
+    return;
+  }
+  renderUpcoming(); render();
+}
+function renderUpcoming() {
+  const el = $('upcomingList');
+  if (!S.upcoming.length) {
+    el.innerHTML = '<div class="empty">Chưa có lịch đã xác nhận trong 7 ngày tới.</div>';
+    return;
+  }
+  el.innerHTML = S.upcoming.map(a => `<div class="row" style="grid-template-columns:105px minmax(0,1fr) auto auto">
+    <div class="tm"><b>${esc(a.time)}</b><small>${esc(a.date.split('-').reverse().join('/'))}</small></div>
+    <div class="pn"><b>${esc(a.patient)}</b><p>${esc(a.reason)}</p></div>
+    <span class="tag confirmed">${esc(a.status)}</span>
+    <button class="lnk" data-upcoming-date="${esc(a.date)}">Xem lịch ngày</button>
+  </div>`).join('');
+}
+async function loadCompleted() {
+  try {
+    S.completed = await api('/doctor/completed');
+    if (!Array.isArray(S.completed)) throw new Error('Dữ liệu lịch đã khám không hợp lệ');
+  } catch (e) {
+    S.completed = [];
+    $('completedList').textContent = 'Không tải được lịch đã khám: ' + e.message;
+    return;
+  }
+  $('completedList').innerHTML = S.completed.length
+    ? S.completed.map(a => `<div class="row" style="grid-template-columns:105px minmax(0,1fr) auto auto">
+        <div class="tm"><b>${esc(a.time)}</b><small>${esc(a.date.split('-').reverse().join('/'))}</small></div>
+        <div class="pn"><b>${esc(a.patient)}</b><p>${esc(a.reason)}</p></div>
+        <span class="tag">Đã khám</span>
+        <button class="lnk" data-completed-date="${esc(a.date)}">Xem lịch ngày</button>
+      </div>`).join('')
+    : '<div class="empty">Chưa có ca khám hoàn tất.</div>';
+  render();
+}
+async function init() {
+  try { S.me = await api('/doctor/me'); } catch (e) { toast(e.message, true); S.me = { name: 'Bác sĩ' }; }
+  $('meName').textContent = S.me.name; $('meSpec').textContent = S.me.specialty || ''; $('meAv').textContent = ini(S.me.name.replace(/^BS\.?\s*/i, ''));
+  const d = new Date(); $('todayTxt').textContent = 'Hôm nay, ' + d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  $('dow').textContent = d.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+  const h = d.getHours(); $('greet').textContent = `Chào buổi ${h < 12 ? 'sáng' : h < 18 ? 'chiều' : 'tối'}, bác sĩ ${S.me.shortName || S.me.name.split(' ').pop()}!`;
+  $('dateIn').value = S.date; await loadList(); await loadUpcoming(); await loadCompleted();
+}
+
+/* Danh sách tổng hợp cho bốn tab tại Tổng quan; không thay đổi dữ liệu SQL. */
+function overviewAppointments() {
+  const today = new Date().toLocaleDateString('en-CA');
+  const merged = new Map();
+  for (const a of S.list) merged.set(String(a.id), { ...a, date: S.date });
+  for (const a of S.upcoming) if (!merged.has(String(a.id))) merged.set(String(a.id), {
+    id: a.id, date: a.date, time: a.time, endTime: '',
+    status: a.status === 'Đang khám' ? 'in_progress' : 'confirmed',
+    room: 'Chưa phân phòng', reason: a.reason, history: '',
+    patient: { id: a.id, code: `LH-${String(a.id).padStart(6,'0')}`, name: a.patient, gender: '', age: '' }
+  });
+  for (const a of S.completed) merged.set(String(a.id), {
+    ...(merged.get(String(a.id)) || {}), id: a.id, date: a.date,
+    time: a.time, endTime: '', status: 'completed', room: 'Chưa phân phòng',
+    reason: a.reason, history: '', recordDone: true,
+    patient: { id: a.id, code: `LH-${String(a.id).padStart(6,'0')}`, name: a.patient, gender: '', age: '' }
+  });
+  return [...merged.values()].sort((a,b) => (b.date || today).localeCompare(a.date || today) || a.time.localeCompare(b.time));
+}
+/* ================= HIỂN THỊ ================= */
+function render() {
+  const L = S.list, cnt = s => L.filter(a => a.status === s).length;
+  const done = cnt('completed');
+  $('nav').innerHTML = NAV.map(([k, t, p]) => `<button class="${S.view === k ? 'on' : ''}" data-go="${k}">${ico(p)}${t}${k === 'appointments' && L.length ? `<span class="bd">${L.length}</span>` : ''}</button>`).join('');
+  $('subGreet').innerHTML = `Bác sĩ có <b>${L.length} lịch khám</b> đã được xác nhận trong hôm nay.`;
+  const card = (c, i, k, v, s) => `<div class="st ${c}"><i>${ico(i)}</i><div><small>${k}</small><strong>${String(v).padStart(2, '0')}</strong><span>${s}</span></div></div>`;
+  $('stats').innerHTML = card('', 'cal', 'LỊCH KHÁM HÔM NAY', L.length, 'Ca khám đã xác nhận') + card('a', 'clock', 'ĐANG CHỜ KHÁM', cnt('waiting'), 'Bệnh nhân đã check-in')
+    + card('b', 'check', 'ĐÃ HOÀN THÀNH', done, `${L.length - done} ca khám còn lại`);
+  const tabList = S.view === 'overview' ? overviewAppointments() : L;
+  $('listHeading').textContent = S.view === 'overview' ? 'Lịch khám của tôi (tất cả trạng thái)' : 'Lịch khám theo ngày';
+  $('tabs').innerHTML = TABS.map(([k, t]) => `<button class="${S.tab === k ? 'on' : ''}" data-tab="${k}">${t}${k === 'all' ? `<em>${tabList.length}</em>` : ''}</button>`).join('');
+  const show = S.tab === 'all' ? tabList : tabList.filter(a =>
+    S.tab === 'waiting' ? ['waiting', 'in_progress'].includes(a.status) : a.status === S.tab);
+  const nx = nextAppt();
+  $('list').innerHTML = show.length ? show.map(a => row(a, nx)).join('') : '<div class="empty">Không có lịch khám nào.</div>';
+  renderNext(nx); renderNotes();
+}
+function nextAppt() { return S.list.find(a => a.status === 'in_progress') || S.list.find(a => a.status === 'waiting') || S.list.find(a => a.status === 'confirmed'); }
+function row(a, nx) {
+  const p = a.patient, canStart = (a.status === 'confirmed' || a.status === 'in_progress') && (!a.date || a.date <= new Date().toLocaleDateString('en-CA'));
+  return `<div class="row ${nx && nx.id === a.id ? 'next' : ''}">
+    <div class="tm"><b>${esc(a.time)}</b><small>${esc(a.date ? a.date.split('-').reverse().join('/') : a.endTime)}</small></div><div class="pa">${esc(ini(p.name))}</div>
+    <div class="pn"><b>${esc(p.name)}</b><small>${p.gender ? esc(p.gender) + ' · ' : ''}${p.age ? esc(p.age) + ' tuổi' : ''}</small><p>${esc(a.reason)}</p>
+      <div class="w">${ico('pin')}Khám tại phòng · ${esc(a.room)}</div></div>
+    <span class="tag ${esc(a.status)}">${LBL[a.status] || esc(a.status)}</span>
+    <button class="lnk" data-act="profile" data-id="${a.id}">Xem hồ sơ</button>
+    ${canStart ? `<button class="btn pri" data-act="start" data-id="${a.id}">${ico('steth')}${a.status === 'in_progress' ? 'Tiếp tục khám' : 'Bắt đầu khám'}</button>` : '<span></span>'}</div>`;
+}
+function renderNext(a) {
+  if (!a) { $('next').innerHTML = '<small>CA KHÁM TIẾP THEO</small><div class="empty">Đã hết ca khám trong hôm nay.</div>'; return; }
+  const p = a.patient, diff = mins(a.time) - nowMin();
+  const when = a.status === 'in_progress' ? 'Đang khám' : diff > 0 ? `Còn ${diff} phút` : 'Đã đến giờ';
+  $('next').innerHTML = `<div class="top"><small>CA KHÁM TIẾP THEO</small><span class="tag ${esc(a.status)}">${LBL[a.status]}</span></div>
+    <h3>${esc(a.time)} · ${when}</h3><div class="pbox"><div class="pa">${esc(ini(p.name))}</div><div><b>${esc(p.name)}</b><br><small style="color:var(--mut)">${p.gender ? esc(p.gender) + ' · ' : ''}${p.age ? esc(p.age) + ' tuổi' : ''} · ${esc(p.code)}</small></div></div>
+    <div class="kv"><small>LÝ DO KHÁM</small>${esc(a.reason)}</div><div class="kv"><small>TIỀN SỬ</small>${esc(a.history || 'Chưa ghi nhận')}</div>
+    <div class="kv" style="border:0"><small>HÌNH THỨC</small>Khám tại phòng · ${esc(a.room)}</div>
+    <button class="btn pri" data-act="start" data-id="${a.id}">${ico('steth')}${a.status === 'in_progress' ? 'Tiếp tục khám' : 'Bắt đầu khám'}</button>
+    <button class="lnk" data-act="profile" data-id="${a.id}">Xem hồ sơ bệnh nhân</button>`;
+}
+function renderNotes() {
+  const w = S.list.filter(a => a.status === 'waiting'), inc = S.list.filter(a => a.status === 'completed' && !a.recordDone);
+  const n = (c, i, t, s) => `<div class="note ${c}"><i>${ico(i)}</i><div><b>${t}</b><small>${s}</small></div></div>`;
+  $('notes').innerHTML = (w.length ? n('a', 'clock', `${w.length} bệnh nhân đang chờ`, 'Đã check-in lúc ' + esc(w[0].checkinAt || '')) : '')
+    + (inc.length ? n('', 'doc', `${inc.length} hồ sơ cần hoàn thiện`, 'Bổ sung chẩn đoán và đơn thuốc') : '')
+    || '<div class="empty">Không có mục cần chú ý.</div>';
+}
+
+/* ================= ĐIỀU HƯỚNG ================= */
+function go(v) {
+  S.view = v; const ov = v === 'overview', ap = v === 'appointments';
+  $('v-overview').classList.toggle('hide', !ov); $('v-stub').classList.toggle('hide', ov || ap || false);
+  $('cols').classList.toggle('hide', !(ov || ap)); $('side').classList.toggle('hide', !ov);
+  $('upcomingSection').classList.toggle('hide', !ov);
+  $('completedSection').classList.toggle('hide', !ov);
+  $('cols').style.gridTemplateColumns = ap ? '1fr' : '';
+  $('dateIn').classList.toggle('hide', !ap); $('seeAll').classList.toggle('hide', ap);
+  $('crumb').textContent = ov ? 'Cổng làm việc' : NAV.find(n => n[0] === v)[1];
+  if (!ov && !ap) $('stubTxt').textContent = `Màn "${NAV.find(n => n[0] === v)[1]}" sẽ nối với API tương ứng (xem phần endpoint trong CONFIG).`;
+  render();
+}
+
+/* ================= MODAL ================= */
+function modal(html) { const m = document.createElement('div'); m.className = 'mask'; m.innerHTML = `<div class="modal" role="dialog">${html}</div>`; m.addEventListener('click', e => { if (e.target === m || e.target.dataset.close != null) m.remove(); }); document.body.append(m); return m; }
+async function openProfile(a) {
+  const p = a.patient; let rec = [];
+  try { rec = await api(`/doctor/patients/${p.id}/records`) || []; } catch (e) { toast(e.message, true); }
+  modal(`<h3>Hồ sơ ${esc(p.name)}</h3><div class="kv"><small>MÃ BỆNH NHÂN</small>${esc(p.code)} · ${p.gender ? esc(p.gender) + ' · ' : ''}${p.age ? esc(p.age) + ' tuổi' : ''}</div>
+    <div class="kv"><small>TIỀN SỬ</small>${esc(a.history || 'Chưa ghi nhận')}</div>
+    <div class="kv" style="border:0"><small>LẦN KHÁM TRƯỚC</small>${rec.length ? rec.map(r => `${esc(r.date)}: ${esc(r.diagnosis)}`).join('<br>') : 'Chưa có dữ liệu'}</div>
+    <div class="acts"><button class="btn" data-close>Đóng</button></div>`);
+}
+async function startExam(a, btn) {
+  if (btn) btn.disabled = true;
+  try { if (a.status !== 'in_progress') await api(`/doctor/appointments/${a.id}/start`, { method: 'POST' }); a.status = 'in_progress'; render(); }
+  catch (e) { toast(e.message, true); if (btn) btn.disabled = false; return; }
+  const m = modal(`<h3>Khám bệnh: ${esc(a.patient.name)}</h3><div class="kv"><small>LÝ DO KHÁM</small>${esc(a.reason)}</div>
+    <label>Chẩn đoán</label><textarea id="fDx"></textarea><label>Đơn thuốc</label><textarea id="fRx"></textarea><label>Ghi chú</label><textarea id="fNote"></textarea>
+    <div class="acts"><button class="btn" data-close>Để sau</button><button class="btn pri" id="fDone">Lưu và hoàn thành</button></div>`);
+  m.querySelector('#fDone').onclick = async e => {
+    const dx = m.querySelector('#fDx').value.trim(); if (!dx) return toast('Nhập chẩn đoán trước khi hoàn thành.', true);
+    e.target.disabled = true;
+    try { await api(`/doctor/appointments/${a.id}/complete`, { method: 'POST', body: { diagnosis: dx, prescription: m.querySelector('#fRx').value.trim(), note: m.querySelector('#fNote').value.trim() } });
+      m.remove(); toast('Đã hoàn thành ca khám.'); loadList(); loadUpcoming(); loadCompleted(); } catch (er) { toast(er.message, true); e.target.disabled = false; }
+  };
+}
+
+/* ================= SỰ KIỆN ================= */
+document.addEventListener('click', e => {
+  const cd = e.target.closest('[data-completed-date]');
+  if (cd) { S.date = cd.dataset.completedDate; $('dateIn').value = S.date; S.tab = 'completed'; go('appointments'); loadList(); return; }
+  const ud = e.target.closest('[data-upcoming-date]');
+  if (ud) { S.date = ud.dataset.upcomingDate; $('dateIn').value = S.date; S.tab = 'all'; go('appointments'); loadList(); return; }
+  const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); return go(g.dataset.go); }
+  const t = e.target.closest('[data-tab]'); if (t) { S.tab = t.dataset.tab; return render(); }
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = (S.view === 'overview' ? overviewAppointments() : S.list).find(x => x.id == b.dataset.id); if (!a) return;
+  b.dataset.act === 'profile' ? openProfile(a) : startExam(a, b);
+});
+$('dateIn').onchange = e => { S.date = e.target.value; loadList(); };
+$('logout').onclick = logout;
+$('bell').onclick = () => toast('Chưa có thông báo mới.');
+init();
+</script>
+</body>
+</html>

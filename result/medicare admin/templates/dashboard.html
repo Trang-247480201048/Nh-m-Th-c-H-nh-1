@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare | Tổng quan quản trị</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body class="dashboard-page">
+
+<div class="app-shell">
+
+    
+<aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div class="brand-mark">✚</div>
+            <div>
+                <div class="brand-name">MediCare</div>
+                <div class="brand-sub">HỆ THỐNG QUẢN TRỊ</div>
+            </div>
+        </div>
+
+        <div class="nav-label">KHÔNG GIAN LÀM VIỆC</div>
+
+        <nav class="nav-menu">
+            <a class="nav-item active" href="{{ url_for('dashboard') }}">
+                <span class="nav-icon">▦</span>
+                <span>Tổng quan</span>
+            </a>
+
+            <a class="nav-item" href="{{ url_for('appointments_page') }}">
+                <span class="nav-icon">▣</span>
+                <span>Quản lý lịch hẹn</span>
+                <span class="nav-count" id="pendingCount">0</span>
+            </a>
+
+            <a class="nav-item" href="{{ url_for('doctors_page') }}">
+                <span class="nav-icon">♧</span>
+                <span>Quản lý bác sĩ</span>
+            </a>
+
+            <a class="nav-item" href="{{ url_for('schedule_page') }}">
+                <span class="nav-icon">▦</span>
+                <span>Lịch làm việc</span>
+            </a>
+
+            <a class="nav-item" href="{{ url_for('patients') }}">
+                <span class="nav-icon">♙</span>
+                <span>Quản lý bệnh nhân</span>
+            </a>
+
+            <a class="nav-item" href="{{ url_for('specialties_page') }}">
+                <span class="nav-icon">♡</span>
+                <span>Chuyên khoa & dịch vụ</span>
+            </a>
+
+            <a class="nav-item" href="#accounts">
+                <span class="nav-icon">♧</span>
+                <span>Tài khoản & phân quyền</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="support-icon">☏</div>
+            <strong>Cần hỗ trợ vận hành?</strong>
+            <p>Đội ngũ MediCare luôn sẵn sàng hỗ trợ bạn.</p>
+            <a href="mailto:support@medicare.local">Trung tâm trợ giúp ↗</a>
+        </div>
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            Hệ thống hoạt động ổn định
+        </div>
+    </aside>
+
+
+    <main class="main-area" id="overview">
+
+        <header class="topbar">
+            <button class="mobile-menu" id="mobileMenu" type="button"
+                    aria-label="Mở menu">☰</button>
+
+            <div class="breadcrumbs">
+                Quản trị <span>/</span> <strong>Tổng quan</strong>
+            </div>
+
+            <div class="topbar-right">
+                <span class="top-date">Hôm nay, {{ today }}</span>
+
+                <button class="icon-button" type="button"
+                        title="Thông báo" id="notificationBtn">
+                    ♧<i class="notification-dot"></i>
+                </button>
+
+                <div class="profile-avatar">AD</div>
+
+                <div class="profile-text">
+                    <strong>{{ admin_username }}</strong>
+                    <small>Quản trị viên</small>
+                </div>
+
+                <form class="logout-form" method="post"
+                      action="{{ url_for('logout') }}">
+                    <button class="logout-button" type="submit">
+                        ↪ Đăng xuất
+                    </button>
+                </form>
+            </div>
+        </header>
+
+        <section class="content">
+
+            <div class="page-heading">
+                <div>
+                    <h1>Tổng quan</h1>
+                    <p>
+                        Chào mừng bạn đến với hệ thống quản trị MediCare.
+                        Cùng theo dõi hoạt động phòng khám hôm nay.
+                    </p>
+                </div>
+
+                <div class="heading-actions">
+                    <button class="btn" type="button" id="dateBtn">
+                        ▦ &nbsp; {{ today }}
+                    </button>
+
+                    <button class="btn btn-primary" type="button" id="exportBtn">
+                        ⇩ &nbsp; Xuất báo cáo
+                    </button>
+                </div>
+            </div>
+
+            <section class="stats-grid">
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span>Lịch hẹn</span>
+                        <span class="stat-icon teal">▣</span>
+                    </div>
+                    <div class="stat-number" id="totalAppointments">
+                        {{ appointments|length }}
+                    </div>
+                    <div class="stat-foot muted">
+                        Tổng số lịch trong danh sách
+                    </div>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span>Chờ xác nhận</span>
+                        <span class="stat-icon amber">◷</span>
+                    </div>
+                    <div class="stat-number" id="pendingAppointments">0</div>
+                    <div class="stat-foot warning-text">
+                        Cần xử lý lịch hẹn
+                    </div>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span>Đã xác nhận</span>
+                        <span class="stat-icon teal">✓</span>
+                    </div>
+                    <div class="stat-number" id="confirmedAppointments">0</div>
+                    <div class="stat-foot positive">
+                        Lịch đã được xác nhận
+                    </div>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span>Đã hủy</span>
+                        <span class="stat-icon slate">×</span>
+                    </div>
+                    <div class="stat-number" id="cancelledAppointments">0</div>
+                    <div class="stat-foot muted">
+                        Lịch hẹn không còn hiệu lực
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="middle-grid">
+
+                <article class="panel chart-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Lượng lịch hẹn</h2>
+                            <p>Thống kê trạng thái lịch hẹn hiện tại</p>
+                        </div>
+                        <a href="{{ url_for('appointments_page') }}">
+                            Quản lý lịch hẹn ↗
+                        </a>
+                    </div>
+
+                    <div class="chart-legend">
+                        <span>
+                            <i class="legend-dot booked"></i>
+                            Đã xác nhận
+                        </span>
+                        <span>
+                            <i class="legend-dot completed"></i>
+                            Chờ xác nhận
+                        </span>
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="appointmentChart"
+                                aria-label="Biểu đồ thống kê lịch hẹn"
+                                role="img"></canvas>
+                    </div>
+                </article>
+
+                <article class="panel attention-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Cần chú ý</h2>
+                            <p>Ưu tiên xử lý trong hôm nay</p>
+                        </div>
+                    </div>
+
+                    <div class="attention-item">
+                        <div class="attention-icon amber">◷</div>
+                        <div>
+                            <strong id="pendingAttention">
+                                0 lịch hẹn chờ xác nhận
+                            </strong>
+                            <p>Các yêu cầu đang chờ xử lý</p>
+                            <a href="{{ url_for('appointments_page') }}">
+                                Xem lịch hẹn →
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="attention-item">
+                        <div class="attention-icon teal">▣</div>
+                        <div>
+                            <strong>Quản lý lịch khám</strong>
+                            <p>Kiểm tra và cập nhật trạng thái lịch hẹn</p>
+                            <a href="{{ url_for('appointments_page') }}">
+                                Xử lý lịch hẹn →
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="attention-item">
+                        <div class="attention-icon slate">▦</div>
+                        <div>
+                            <strong>Lịch làm việc bác sĩ</strong>
+                            <p>Kiểm tra lịch phân công và khung giờ khám</p>
+                            <a href="{{ url_for('schedule_page') }}">
+                                Xem lịch làm việc →
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="panel appointments-panel" id="appointments">
+
+                <div class="panel-heading appointment-heading">
+                    <div>
+                        <h2>Lịch hẹn gần đây</h2>
+                        <p>Danh sách lịch hẹn được cung cấp từ máy chủ</p>
+                    </div>
+
+                    <a href="{{ url_for('appointments_page') }}">
+                        Tất cả lịch hẹn →
+                    </a>
+                </div>
+
+                <div class="table-tools">
+                    <input
+                        id="searchInput"
+                        type="search"
+                        placeholder="Tìm bệnh nhân, mã lịch hẹn..."
+                        aria-label="Tìm lịch hẹn"
+                    >
+
+                    <select id="statusFilter" aria-label="Lọc trạng thái">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Đã xác nhận">Đã xác nhận</option>
+                        <option value="Chờ xác nhận">Chờ xác nhận</option>
+                        <option value="Đã hủy">Đã hủy</option>
+                        <option value="Hoàn tất">Hoàn tất</option>
+                    </select>
+                </div>
+
+                <div class="table-scroll">
+                    <table id="appointmentTable">
+                        <thead>
+                            <tr>
+                                <th>MÃ LỊCH HẸN</th>
+                                <th>BỆNH NHÂN</th>
+                                <th>GIỜ KHÁM</th>
+                                <th>BÁC SĨ / CHUYÊN KHOA</th>
+                                <th>TRẠNG THÁI</th>
+                                <th>THAO TÁC</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for a in appointments %}
+                            <tr data-code="{{ a.code }}"
+                                data-status="{{ a.status }}">
+
+                                <td class="code-cell">{{ a.code }}</td>
+
+                                <td>
+                                    <strong>{{ a.patient }}</strong>
+                                    <small class="subline">
+                                        {{ a.patient_code }} · {{ a.phone }}
+                                    </small>
+                                </td>
+
+                                <td class="time-cell">{{ a.time }}</td>
+
+                                <td>
+                                    <strong class="doctor-name">
+                                        {{ a.doctor }}
+                                    </strong>
+                                    <small class="subline">
+                                        {{ a.specialty }}
+                                    </small>
+                                </td>
+
+                                <td>
+                                    <span class="status-pill {% if a.status == 'Chờ xác nhận' %}pending{% elif a.status == 'Đã hủy' %}cancelled{% endif %}">
+                                        <i></i>{{ a.status }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if a.status == 'Chờ xác nhận' %}
+                                    <button
+                                        class="btn-confirm"
+                                        type="button"
+                                        data-confirm="{{ a.code }}">
+                                        Xác nhận
+                                    </button>
+                                    {% else %}
+                                    <button
+                                        class="btn-detail"
+                                        type="button"
+                                        data-detail="{{ a.code }}">
+                                        Xem chi tiết
+                                    </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="table-empty">
+                                    Chưa có lịch hẹn nào.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-empty" id="emptyState" hidden>
+                    Không tìm thấy lịch hẹn phù hợp.
+                </div>
+
+            </section>
+
+            <footer class="footer">
+                <span>© 2026 MediCare · Nền tảng quản lý đặt lịch khám</span>
+                <span>Dữ liệu hiển thị theo danh sách lịch hẹn</span>
+            </footer>
+
+        </section>
+    </main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+    const table = document.getElementById('appointmentTable');
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const emptyState = document.getElementById('emptyState');
+    const toast = document.getElementById('toast');
+
+    let toastTimer;
+
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(function () {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    function getAppointmentRows() {
+        return Array.from(
+            table.querySelectorAll('tbody tr[data-code]')
+        );
+    }
+
+    function updateStatistics() {
+        const rows = getAppointmentRows();
+
+        let pending = 0;
+        let confirmed = 0;
+        let cancelled = 0;
+        let completed = 0;
+
+        rows.forEach(function (row) {
+            const status = row.dataset.status;
+
+            if (status === 'Chờ xác nhận') {
+                pending++;
+            } else if (status === 'Đã xác nhận') {
+                confirmed++;
+            } else if (status === 'Đã hủy') {
+                cancelled++;
+            } else if (status === 'Hoàn tất') {
+                completed++;
+            }
+        });
+
+        document.getElementById('totalAppointments').textContent =
+            rows.length;
+
+        document.getElementById('pendingAppointments').textContent =
+            pending;
+
+        document.getElementById('confirmedAppointments').textContent =
+            confirmed;
+
+        document.getElementById('cancelledAppointments').textContent =
+            cancelled;
+
+        document.getElementById('pendingCount').textContent = pending;
+
+        document.getElementById('pendingAttention').textContent =
+            pending + ' lịch hẹn chờ xác nhận';
+
+        return {
+            pending: pending,
+            confirmed: confirmed,
+            cancelled: cancelled,
+            completed: completed
+        };
+    }
+
+    function filterAppointments() {
+        const keyword = searchInput.value.trim().toLowerCase();
+        const selectedStatus = statusFilter.value;
+        const rows = getAppointmentRows();
+
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const matchesKeyword =
+                row.innerText.toLowerCase().includes(keyword);
+
+            const matchesStatus =
+                !selectedStatus ||
+                row.dataset.status === selectedStatus;
+
+            const visible = matchesKeyword && matchesStatus;
+
+            row.hidden = !visible;
+
+            if (visible) {
+                visibleCount++;
+            }
+        });
+
+        emptyState.hidden = visibleCount !== 0;
+    }
+
+    searchInput.addEventListener('input', filterAppointments);
+    statusFilter.addEventListener('change', filterAppointments);
+
+    document.getElementById('mobileMenu').addEventListener(
+        'click',
+        function () {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+    );
+
+    document.getElementById('notificationBtn').addEventListener(
+        'click',
+        function () {
+            const stats = updateStatistics();
+
+            showToast(
+                'Hiện có ' + stats.pending +
+                ' lịch hẹn đang chờ xác nhận.'
+            );
+        }
+    );
+
+    document.getElementById('dateBtn').addEventListener(
+        'click',
+        function () {
+            showToast('Ngày hiện tại: {{ today }}');
+        }
+    );
+
+    document.getElementById('exportBtn').addEventListener(
+        'click',
+        function () {
+            const rows = getAppointmentRows();
+
+            const data = [
+                [
+                    'Mã lịch hẹn',
+                    'Bệnh nhân',
+                    'Số điện thoại',
+                    'Giờ khám',
+                    'Bác sĩ',
+                    'Chuyên khoa',
+                    'Trạng thái'
+                ]
+            ];
+
+            rows.forEach(function (row) {
+                const cells = row.cells;
+
+                data.push([
+                    cells[0].innerText,
+                    cells[1].querySelector('strong').innerText,
+                    cells[1].querySelector('small').innerText,
+                    cells[2].innerText,
+                    cells[3].querySelector('strong').innerText,
+                    cells[3].querySelector('small').innerText,
+                    row.dataset.status
+                ]);
+            });
+
+            function escapeCSV(value) {
+                return '"' + String(value).replace(/"/g, '""') + '"';
+            }
+
+            const csv = '\uFEFF' + data.map(function (row) {
+                return row.map(escapeCSV).join(',');
+            }).join('\r\n');
+
+            const blob = new Blob(
+                [csv],
+                { type: 'text/csv;charset=utf-8;' }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = 'BaoCao_LichHen.csv';
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            URL.revokeObjectURL(url);
+
+            showToast('Đã xuất danh sách lịch hẹn ra file CSV.');
+        }
+    );
+
+    document.querySelectorAll('[data-confirm]').forEach(
+        function (button) {
+            button.addEventListener('click', async function () {
+                const code = button.dataset.confirm;
+
+                if (!confirm('Xác nhận lịch hẹn ' + code + '?')) {
+                    return;
+                }
+
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(
+                        '/api/appointments/' +
+                        encodeURIComponent(code) +
+                        '/confirm',
+                        { method: 'POST' }
+                    );
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        location.reload();
+                    } else {
+                        showToast(
+                            result.message || 'Không thể xác nhận lịch hẹn.'
+                        );
+                        button.disabled = false;
+                    }
+                } catch (error) {
+                    showToast('Không kết nối được với máy chủ.');
+                    button.disabled = false;
+                }
+            });
+        }
+    );
+
+    document.querySelectorAll('[data-detail]').forEach(
+        function (button) {
+            button.addEventListener('click', function () {
+                const code = button.dataset.detail;
+                const row = button.closest('tr');
+
+                showToast(
+                    'Mã lịch: ' + code +
+                    ' | Trạng thái: ' + row.dataset.status
+                );
+            });
+        }
+    );
+
+    const stats = updateStatistics();
+
+    if (typeof Chart !== 'undefined') {
+        const chartCanvas = document.getElementById('appointmentChart');
+
+        new Chart(chartCanvas, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Chờ xác nhận',
+                    'Đã xác nhận',
+                    'Đã hủy',
+                    'Hoàn tất'
+                ],
+                datasets: [
+                    {
+                        label: 'Số lịch hẹn',
+                        data: [
+                            stats.pending,
+                            stats.confirmed,
+                            stats.cancelled,
+                            stats.completed
+                        ],
+                        backgroundColor: [
+                            '#b9deda',
+                            '#078b8e',
+                            '#f0b7b7',
+                            '#8aa4c4'
+                        ],
+                        borderRadius: 6,
+                        maxBarThickness: 45
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    filterAppointments();
+})();
+</script>
+
+</body>
+</html>

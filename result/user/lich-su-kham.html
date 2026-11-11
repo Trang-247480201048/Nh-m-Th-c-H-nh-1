@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử khám bệnh - MediCare</title>
+    <link rel="stylesheet" href="common.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8fc;
+            color: #263445;
+        }
+
+        .history-container {
+            width: min(1100px, 92%);
+            margin: 40px auto;
+        }
+
+        .history-heading {
+            margin-bottom: 25px;
+        }
+
+        .history-heading h1 {
+            margin: 0 0 10px;
+            color: #1677c8;
+            font-size: 30px;
+        }
+
+        .history-heading p {
+            color: #6b7785;
+            line-height: 1.6;
+        }
+
+        .history-panel {
+            padding: 25px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .history-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .history-top h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .history-count {
+            color: #1677c8;
+            background: #eaf5ff;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .history-table-wrap {
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #edf0f4;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .history-table th {
+            background: #f3f8fd;
+            color: #42556a;
+        }
+
+        .history-table td {
+            line-height: 1.5;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            white-space: nowrap;
+            background: #fff3d6;
+            color: #956500;
+        }
+
+        .status.confirmed {
+            background: #e2f7e9;
+            color: #168447;
+        }
+
+        .status.cancelled {
+            background: #fde8e7;
+            color: #bd3e3e;
+        }
+
+        .status.completed {
+            background: #e8efff;
+            color: #315ab5;
+        }
+
+        .status.unknown {
+            background: #edf0f4;
+            color: #596777;
+        }
+
+        .empty-state {
+            padding: 45px 15px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 10px;
+        }
+
+        .empty-state p {
+            color: #718096;
+            line-height: 1.7;
+        }
+
+        .primary-btn,
+        .back-btn {
+            display: inline-block;
+            border: none;
+            border-radius: 7px;
+            padding: 11px 17px;
+            background: #1677c8;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .primary-btn:hover,
+        .back-btn:hover {
+            background: #0f609f;
+        }
+
+        .page-bottom {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .message {
+            padding: 18px;
+            border-radius: 8px;
+            background: #eaf5ff;
+            color: #245687;
+            line-height: 1.6;
+        }
+
+        .message.error {
+            background: #fff0ef;
+            color: #a83232;
+        }
+
+        @media (max-width: 600px) {
+            .history-container {
+                margin: 25px auto;
+            }
+
+            .history-panel {
+                padding: 16px;
+            }
+
+            .history-heading h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="history-container">
+        <div class="history-heading">
+            <h1>Lịch sử khám bệnh</h1>
+            <p>Theo dõi các lịch hẹn khám bệnh của bạn trên MediCare.</p>
+        </div>
+
+        <section class="history-panel">
+            <div class="history-top">
+                <h2>Danh sách lịch hẹn</h2>
+                <span class="history-count" id="historyCount">Đang tải...</span>
+            </div>
+
+            <div id="historyContent">
+                <div class="message">Đang tải lịch hẹn...</div>
+            </div>
+        </section>
+
+        <div class="page-bottom">
+            <a class="back-btn" href="trang-chu.html">← Quay về trang chủ</a>
+            <a class="primary-btn" href="dat-lich.html">Đặt lịch khám</a>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const content = document.getElementById("historyContent");
+            const count = document.getElementById("historyCount");
+
+            function escapeHTML(value) {
+                const element = document.createElement("span");
+                element.textContent = String(value ?? "");
+                return element.innerHTML;
+            }
+
+            function formatDate(value) {
+                if (!value) return "Chưa có thông tin";
+
+                const text = String(value);
+
+                if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+                    const parts = text.split("-");
+                    return parts[2] + "/" + parts[1] + "/" + parts[0];
+                }
+
+                const date = new Date(value);
+                if (Number.isNaN(date.getTime())) return text;
+
+                return date.toLocaleDateString("vi-VN");
+            }
+
+            function getStatusClass(status) {
+                const normalized = String(status || "")
+                    .trim()
+                    .toLowerCase();
+
+                if (normalized === "đã xác nhận") return "confirmed";
+                if (normalized === "đã hủy") return "cancelled";
+                if (normalized === "hoàn tất") return "completed";
+                if (normalized === "chờ xác nhận") return "pending";
+
+                return "unknown";
+            }
+
+            function renderHistory(bookings) {
+                if (!Array.isArray(bookings) || bookings.length === 0) {
+                    count.textContent = "0 lịch hẹn";
+
+                    content.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📅</div>
+                            <h3>Bạn chưa có lịch hẹn</h3>
+                            <p>Các lịch khám của bạn sẽ xuất hiện tại đây.</p>
+                            <a class="primary-btn" href="dat-lich.html">
+                                Đặt lịch ngay
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                count.textContent = bookings.length + " lịch hẹn";
+
+                const rows = bookings.map(function (booking, index) {
+                    const doctor =
+                        booking.doctor ||
+                        booking.doctorName ||
+                        booking.BacSi ||
+                        "Chưa có thông tin";
+
+                    const specialty =
+                        booking.specialty ||
+                        booking.specialtyName ||
+                        booking.ChuyenKhoa ||
+                        "Chưa có thông tin";
+
+                    const date =
+                        booking.date ||
+                        booking.appointmentDate ||
+                        booking.NgayKham ||
+                        "";
+
+                    const time =
+                        booking.time ||
+                        booking.appointmentTime ||
+                        booking.GioKham ||
+                        "";
+
+                    const code =
+                        booking.code ||
+                        booking.bookingCode ||
+                        booking.Id ||
+                        ("Lịch hẹn " + (index + 1));
+
+                    const status =
+                        booking.status ||
+                        booking.TrangThai ||
+                        "Chờ xác nhận";
+
+                    return `
+                        <tr>
+                            <td>${escapeHTML(code)}</td>
+                            <td>${escapeHTML(doctor)}</td>
+                            <td>${escapeHTML(specialty)}</td>
+                            <td>
+                                ${escapeHTML(formatDate(date))}
+                                ${time ? "<br>" + escapeHTML(time) : ""}
+                            </td>
+                            <td>
+                                <span class="status ${getStatusClass(status)}">
+                                    ${escapeHTML(status)}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                }).join("");
+
+                content.innerHTML = `
+                    <div class="history-table-wrap">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã lịch hẹn</th>
+                                    <th>Bác sĩ</th>
+                                    <th>Chuyên khoa</th>
+                                    <th>Ngày, giờ khám</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+
+
+async function loadHistory() {
+    try {
+        // Xác định tài khoản đang đăng nhập từ phiên backend.
+        const authResponse = await fetch(
+            "http://127.0.0.1:5000/api/auth/me",
+            {
+                method: "GET",
+                credentials: "include",
+                cache: "no-store"
+            }
+        );
+
+        const authData = await authResponse.json();
+
+        if (
+            !authResponse.ok ||
+            authData.success !== true ||
+            !authData.user
+        ) {
+            count.textContent = "Chưa đăng nhập";
+            content.innerHTML = `
+                <div class="message error">
+                    <strong>Bạn chưa đăng nhập.</strong>
+                    <p>Vui lòng đăng nhập để xem lịch sử khám của mình.</p>
+                    <a class="primary-btn" href="dang-nhap.html">
+                        Đăng nhập
+                    </a>
+                </div>
+            `;
+            return;
+        }
+
+        // Chỉ lấy số điện thoại từ tài khoản do backend xác nhận.
+        const phone =
+            authData.user.phone ||
+            authData.user.SoDienThoai ||
+            "";
+
+        if (!phone.trim()) {
+            count.textContent = "Chưa có số điện thoại";
+            content.innerHTML = `
+                <div class="message error">
+                    Tài khoản hiện tại chưa có số điện thoại.
+                    Vui lòng cập nhật thông tin tài khoản.
+                </div>
+            `;
+            return;
+        }
+
+        // Gọi API lấy lịch khám của tài khoản hiện tại.
+        const apiUrl =
+            "http://127.0.0.1:5000/api/my-appointments?phone=" +
+            encodeURIComponent(phone.trim());
+
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            },
+            credentials: "include",
+            cache: "no-store"
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.success !== true) {
+            throw new Error(
+                data.message || "Không tải được lịch hẹn."
+            );
+        }
+
+        const bookings = Array.isArray(data.appointments)
+            ? data.appointments
+            : [];
+
+        renderHistory(bookings);
+
+    } catch (error) {
+        console.error("Lỗi tải lịch sử khám:", error);
+        count.textContent = "Chưa tải được";
+
+        content.innerHTML = `
+            <div class="message error">
+                <strong>Chưa thể tải lịch sử khám.</strong>
+                <p>${escapeHTML(error.message)}</p>
+                <p>Hãy kiểm tra backend và phiên đăng nhập.</p>
+            </div>
+        `;
+    }
+}
+
+
+
+            loadHistory();
+        });
+    </script>
+</body>
+</html>

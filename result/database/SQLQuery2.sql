@@ -1,0 +1,2 @@
+SELECT @@SERVERNAME AS ServerName;
+SELECT @@VERSION AS SQLServerVersion;

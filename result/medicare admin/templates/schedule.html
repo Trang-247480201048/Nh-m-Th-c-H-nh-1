@@ -1,0 +1,606 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MediCare | Lịch làm việc</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body class="extra-page">
+
+<div class="extra-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <div class="brand-mark">✚</div>
+        <div>
+            <div class="brand-name">MediCare</div>
+            <div class="brand-sub">HỆ THỐNG QUẢN TRỊ</div>
+        </div>
+    </div>
+
+    <div class="nav-label">KHÔNG GIAN LÀM VIỆC</div>
+
+    <nav class="nav-menu">
+
+        <a class="nav-item" href="{{ url_for('dashboard') }}">
+            <span class="nav-icon">▦</span>
+            <span>Tổng quan</span>
+        </a>
+
+        <a class="nav-item" href="{{ url_for('appointments_page') }}">
+            <span class="nav-icon">▣</span>
+            <span>Quản lý lịch hẹn</span>
+            <span class="nav-count" id="pendingCount">
+                {{ pending_count|default(0) }}
+            </span>
+        </a>
+
+        <a class="nav-item" href="{{ url_for('doctors_page') }}">
+            <span class="nav-icon">♧</span>
+            <span>Quản lý bác sĩ</span>
+        </a>
+
+        <a class="nav-item active" href="{{ url_for('schedule_page') }}">
+            <span class="nav-icon">▦</span>
+            <span>Lịch làm việc</span>
+        </a>
+
+        <a class="nav-item" href="{{ url_for('patients') }}">
+            <span class="nav-icon">♙</span>
+            <span>Quản lý bệnh nhân</span>
+        </a>
+
+        <a class="nav-item" href="{{ url_for('specialties_page') }}">
+            <span class="nav-icon">♡</span>
+            <span>Chuyên khoa &amp; dịch vụ</span>
+        </a>
+
+        <a class="nav-item" href="#accounts">
+            <span class="nav-icon">♧</span>
+            <span>Tài khoản &amp; phân quyền</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="support-icon">☏</div>
+        <strong>Cần hỗ trợ vận hành?</strong>
+        <p>Đội ngũ MediCare luôn sẵn sàng hỗ trợ bạn.</p>
+        <a href="mailto:support@medicare.local">
+            Trung tâm trợ giúp ↗
+        </a>
+    </div>
+
+    <div class="system-status">
+        <span class="status-dot"></span>
+        Hệ thống hoạt động ổn định
+    </div>
+
+</aside>
+
+    <!-- MAIN -->
+    <main class="extra-main">
+
+        <!-- TOPBAR ĐỒNG BỘ VỚI DASHBOARD -->
+        <header class="extra-top">
+
+            <div class="breadcrumbs">
+                Quản trị <span>/</span>
+                <strong>Lịch làm việc</strong>
+            </div>
+
+            <div class="topbar-right">
+
+                <span class="top-date">Hôm nay, {{ today }}</span>
+
+                <button class="icon-button"
+                        type="button"
+                        title="Thông báo"
+                        id="notificationBtn"
+                        aria-label="Thông báo">
+                    ♧
+                    <i class="notification-dot"></i>
+                </button>
+
+                <div class="profile-avatar">AD</div>
+
+                <div class="profile-text">
+                    <strong>{{ admin_username }}</strong>
+                    <small>Quản trị viên</small>
+                </div>
+
+                <form class="logout-form"
+                      method="post"
+                      action="{{ url_for('logout') }}">
+                    <button class="logout-button" type="submit">
+                        ↪ Đăng xuất
+                    </button>
+                </form>
+
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <section class="extra-content">
+
+            <div class="extra-head">
+                <div>
+                    <h1>Lịch làm việc</h1>
+                    <p class="subtitle">
+                        Quản lý ca làm việc của bác sĩ từ cơ sở dữ liệu SQL Server.
+                    </p>
+                </div>
+
+                <button class="btnx"
+                        type="button"
+                        onclick="toggleForm()">
+                    ＋ Thêm ca làm việc
+                </button>
+            </div>
+
+            <!-- FLASH MESSAGE -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="flashx {% if category == 'error' %}error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+            {% if db_error %}
+                <div class="flashx error">{{ db_error }}</div>
+            {% endif %}
+
+            <!-- STATISTICS -->
+            <div class="statsx">
+
+                <article class="statx">
+                    <span>Tổng số ca</span>
+                    <strong>{{ total_shifts }}</strong>
+                    <small>Ca của bác sĩ đang chọn</small>
+                </article>
+
+                <article class="statx">
+                    <span>Ca đang mở</span>
+                    <strong>{{ active_shifts }}</strong>
+                    <small>Cho phép sử dụng</small>
+                </article>
+
+                <article class="statx">
+                    <span>Lịch hẹn đã đặt</span>
+                    <strong>{{ total_booked }}</strong>
+                    <small>Tính từ lịch hẹn trong hệ thống</small>
+                </article>
+
+                <article class="statx">
+                    <span>Tỷ lệ lấp đầy</span>
+                    <strong>{{ fill_rate }}%</strong>
+                    <small>{{ total_booked }} / {{ total_capacity }} chỗ</small>
+                </article>
+
+            </div>
+
+            <!-- SHIFT MANAGEMENT -->
+            <div class="panelx">
+
+                <!-- DOCTOR FILTER -->
+                <div class="toolsx">
+
+                    <form method="get"
+                          action="{{ url_for('schedule_page') }}"
+                          style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+
+                        <select name="doctor"
+                                aria-label="Chọn bác sĩ"
+                                onchange="this.form.submit()">
+
+                            {% for d in doctors %}
+                                <option value="{{ d.id }}"
+                                    {% if selected_doctor and d.id == selected_doctor.id %}selected{% endif %}>
+                                    {{ d.name }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+
+                        <button class="btnx light" type="submit">
+                            Xem lịch
+                        </button>
+
+                    </form>
+
+                    {% if selected_doctor %}
+                        <span style="margin-left:auto;color:#7c8991;font-size:12px">
+                            {{ selected_doctor.specialty }} · {{ selected_doctor.room }}
+                        </span>
+                    {% endif %}
+
+                </div>
+
+                <!-- DATE FILTER -->
+                <form method="get"
+                      action="{{ url_for('schedule_page') }}"
+                      class="date-filter">
+
+                    <input type="hidden"
+                           name="doctor"
+                           value="{{ selected_doctor.id if selected_doctor else '' }}">
+
+                    <label for="scheduleDate">Ngày xem lịch:</label>
+
+                    <input type="date"
+                           id="scheduleDate"
+                           name="date"
+                           value="{{ selected_date }}"
+                           required>
+
+                    <button class="btnx light" type="submit">
+                        Xem lịch
+                    </button>
+
+                </form>
+
+                <!-- ADD SHIFT FORM -->
+                <div id="addShiftForm"
+                     style="display:none;border:1px solid #e7edf1;background:#fbfcfe;border-radius:10px;padding:18px;margin-bottom:20px">
+
+                    <h2 style="font-size:17px;margin:0 0 16px">
+                        Thêm ca làm việc
+                    </h2>
+
+                    <form method="post" action="{{ url_for('schedule_page') }}">
+
+                        <div class="formx">
+
+                            <label class="fieldx">
+                                Bác sĩ
+
+                                <select name="doctor_id" required>
+                                    {% for d in doctors %}
+                                        <option value="{{ d.id }}"
+                                            {% if selected_doctor and d.id == selected_doctor.id %}selected{% endif %}>
+                                            {{ d.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+
+                            <label class="fieldx">
+                                Ngày làm việc
+                                <input type="date"
+                                       name="work_date"
+                                       min="{{ today_iso }}"
+                                       required>
+                            </label>
+
+                            <label class="fieldx">
+                                Số lượng lịch tối đa
+                                <input type="number"
+                                       name="capacity"
+                                       min="1"
+                                       value="14"
+                                       required>
+                            </label>
+
+                            <label class="fieldx">
+                                Giờ bắt đầu
+                                <input type="time"
+                                       name="start_time"
+                                       required>
+                            </label>
+
+                            <label class="fieldx">
+                                Giờ kết thúc
+                                <input type="time"
+                                       name="end_time"
+                                       required>
+                            </label>
+
+                            <label class="fieldx">
+                                Ghi chú
+                                <input type="text"
+                                       name="note"
+                                       maxlength="250"
+                                       placeholder="Ví dụ: Khám theo lịch hẹn">
+                            </label>
+
+                            <div class="wide" style="display:flex;gap:8px;flex-wrap:wrap">
+                                <button class="btnx" type="submit">
+                                    Lưu ca làm việc
+                                </button>
+
+                                <button class="btnx light"
+                                        type="button"
+                                        onclick="toggleForm()">
+                                    Đóng
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SHIFT TABLE -->
+                <h2 style="font-size:17px;margin:0 0 14px">
+                    Danh sách ca làm việc
+                    {% if selected_doctor %}
+                        — {{ selected_doctor.name }}
+                    {% endif %}
+                </h2>
+
+                <div class="table-wrap">
+
+                    <table class="tablex">
+
+                        <thead>
+                            <tr>
+                                <th>Ngày làm việc</th>
+                                <th>Giờ làm</th>
+                                <th>Số lịch đã đặt</th>
+                                <th>Sức chứa</th>
+                                <th>Ghi chú</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for s in shifts %}
+                                <tr id="shift-{{ s.id }}">
+
+                                    <td>
+                                        <b>{{ s.day }}</b><br>
+                                        <span style="color:#82909a">
+                                            {{ s.date }}
+                                        </span>
+                                    </td>
+
+                                    <td>{{ s.start }} – {{ s.end }}</td>
+                                    <td>{{ s.booked }}</td>
+                                    <td>{{ s.capacity }}</td>
+                                    <td>{{ s.note or '—' }}</td>
+
+                                    <td>
+                                        {% if s.status %}
+                                            <span class="pillx">Đang mở</span>
+                                        {% else %}
+                                            <span class="pillx off">Đã tắt</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td style="white-space:nowrap">
+
+                                        <button class="btnx light"
+                                                type="button"
+                                                onclick="toggleShift({{ s.id }})">
+                                            {% if s.status %}
+                                                Tắt ca
+                                            {% else %}
+                                                Mở ca
+                                            {% endif %}
+                                        </button>
+
+                                        <button class="btnx danger"
+                                                type="button"
+                                                onclick="deleteShift({{ s.id }})">
+                                            Xóa
+                                        </button>
+
+                                    </td>
+                                </tr>
+
+                            {% else %}
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="emptyx">
+                                            {% if selected_doctor %}
+                                                Bác sĩ này chưa có ca làm việc trong cơ sở dữ liệu.
+                                                Hãy nhấn “Thêm ca làm việc” để tạo ca mới.
+                                            {% else %}
+                                                Chưa có bác sĩ để hiển thị lịch làm việc.
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <!-- SCHEDULE BY TIME -->
+            <div class="panelx">
+
+                <h2 style="font-size:17px;margin:0 0 8px">
+                    Thời khóa biểu theo khung giờ
+                </h2>
+
+                <p class="subtitle">
+                    Bác sĩ:
+                    {{ selected_doctor.name if selected_doctor else 'Chưa chọn bác sĩ' }}
+                    · Ngày: {{ selected_date }}
+                </p>
+
+                <!-- LEGEND -->
+                <div class="schedule-legend">
+                    <span>
+                        <i class="legend-dot available"></i>
+                        Còn trống
+                    </span>
+
+                    <span>
+                        <i class="legend-dot booked"></i>
+                        Đã đặt lịch
+                    </span>
+
+                    <span>
+                        <i class="legend-dot off"></i>
+                        Ca đã tắt
+                    </span>
+                </div>
+
+                <!-- TIME SLOTS -->
+                <div class="schedule-grid">
+
+                    {% for slot in slots %}
+
+                        <article class="time-card {{ slot.status }}">
+
+                            <div class="time-card-head">
+
+                                <strong>
+                                    {{ slot.start }} – {{ slot.end }}
+                                </strong>
+
+                                <span class="slot-status">
+                                    {% if slot.status == 'booked' %}
+                                        Đã đặt
+                                    {% elif slot.status == 'off' %}
+                                        Đã tắt
+                                    {% else %}
+                                        Còn trống
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+                            {% for appointment in slot.appointments %}
+
+                                <div class="appointment-mini">
+
+                                    <strong>{{ appointment.patient }}</strong>
+
+                                    <span>
+                                        Giờ khám: {{ appointment.time }}
+                                    </span>
+
+                                    {% if appointment.phone %}
+                                        <small>
+                                            SĐT: {{ appointment.phone }}
+                                        </small>
+                                    {% endif %}
+
+                                    <small>
+                                        Trạng thái: {{ appointment.status }}
+                                    </small>
+
+                                    {% if appointment.reason %}
+                                        <small>
+                                            Lý do: {{ appointment.reason }}
+                                        </small>
+                                    {% endif %}
+
+                                </div>
+
+                            {% else %}
+
+                                <p class="slot-empty">
+                                    Chưa có bệnh nhân
+                                </p>
+
+                            {% endfor %}
+
+                        </article>
+
+                    {% else %}
+
+                        <div class="emptyx" style="grid-column:1/-1">
+                            Chưa có ca làm việc trong ngày này.
+                            Hãy chọn ngày khác hoặc thêm ca mới.
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+            </div>
+
+            <footer class="footx">
+                © 2026 MediCare · Lịch làm việc được tải từ SQL Server.
+            </footer>
+
+        </section>
+    </main>
+</div>
+
+<script>
+    // Hiện hoặc ẩn form thêm ca làm việc
+    function toggleForm() {
+        const form = document.getElementById("addShiftForm");
+
+        form.style.display =
+            form.style.display === "none" ? "block" : "none";
+
+        if (form.style.display === "block") {
+            form.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    }
+
+    // Gửi yêu cầu đến backend
+    async function postScheduleAction(url, actionName) {
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                alert(result.message || "Không thể thực hiện thao tác.");
+                return false;
+            }
+
+            alert(result.message || actionName + " thành công.");
+            return true;
+
+        } catch (error) {
+            alert("Không thể kết nối máy chủ. Hãy kiểm tra app.py.");
+            return false;
+        }
+    }
+
+    // Bật hoặc tắt ca làm việc
+    async function toggleShift(shiftId) {
+        const ok = await postScheduleAction(
+            `/api/schedule/${shiftId}/toggle`,
+            "Cập nhật trạng thái"
+        );
+
+        if (ok) {
+            window.location.reload();
+        }
+    }
+
+    // Xóa ca làm việc
+    async function deleteShift(shiftId) {
+        if (!confirm("Bạn có chắc muốn xóa ca làm việc này không?")) {
+            return;
+        }
+
+        const ok = await postScheduleAction(
+            `/api/schedule/${shiftId}/delete`,
+            "Xóa ca"
+        );
+
+        if (ok) {
+            window.location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>

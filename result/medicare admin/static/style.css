@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+/* MediCare admin: giao diện thống nhất theo cổng bác sĩ. Dùng chung cho dashboard, lịch hẹn, bác sĩ, lịch làm việc, bệnh nhân. */
+:root{
+  --teal:#0f8f80;--teal-d:#0b6f63;--teal-l:#e3f4f1;--bg:#f2f7f7;--ink:#14282b;--mut:#7a8f92;--line:#e3ecec;
+  --amber:#fdf1d3;--amber-t:#a9741a;--blue:#e8eef7;--blue-t:#4a6288;--red:#e5484d;--redbg:#fde8e8;--redt:#b64045;--r:16px;
+  --ic-grid:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z'/%3E%3C/svg%3E");
+  --ic-cal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4h18v18H3zM16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E");
+  --ic-clock:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 6v6l4 2'/%3E%3C/svg%3E");
+  --ic-user:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6'/%3E%3C/svg%3E");
+  --ic-users:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8'/%3E%3C/svg%3E");
+  --ic-heart:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.6a5.5 5.5 0 0 0 0-7.8z'/%3E%3C/svg%3E");
+  --ic-shield:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E");
+  --ic-check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  --ic-x:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
+  --ic-bell:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0'/%3E%3C/svg%3E");
+  --ic-plus:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E");
+  --ic-trend:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M23 6l-9.5 9.5-5-5L1 18M17 6h6v6'/%3E%3C/svg%3E");
+  --ic-alert:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M12 8v4M12 16h.01'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',system-ui,Arial,sans-serif;font-size:13px}
+button,input,select,textarea{font-family:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+[hidden]{display:none!important}
+a{color:inherit}
+.app-shell,.extra-shell{min-height:100vh;display:flex}
+
+/* ===== Sidebar ===== */
+.sidebar{width:240px;background:#fff;border-right:1px solid var(--line);position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;gap:6px;padding:18px;z-index:20;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:20px;text-decoration:none;color:inherit}
+.brand-mark{height:44px;width:44px;min-width:44px;border-radius:12px;background:var(--teal-l);color:var(--teal);display:grid;place-items:center;font-size:0}
+.brand-name{font-size:19px;color:var(--teal-d);font-weight:700}
+.brand-sub{font-size:9.5px;letter-spacing:.4px;color:var(--teal);font-weight:600;margin-top:2px}
+.nav-label{font-size:11px;color:var(--mut);font-weight:600;margin:0 0 6px 8px}
+.nav-menu{display:grid;gap:4px}
+.nav-item{display:flex;align-items:center;gap:12px;text-decoration:none;color:#4a5f62;padding:10px 12px;border-radius:12px;font-size:14px;transition:background .15s}
+.nav-item:hover{background:var(--bg)}
+.nav-item.active{background:var(--teal-l);color:var(--teal-d);font-weight:600}
+.nav-icon{width:20px;display:flex;align-items:center;justify-content:center;font-size:0}
+.nav-count{margin-left:auto;background:var(--redbg);color:var(--red);border-radius:99px;padding:2px 8px;font-size:11px;font-weight:500}
+.sidebar-bottom{margin-top:auto;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.support-icon{width:36px;height:36px;border-radius:10px;background:var(--teal-l);color:var(--teal);display:grid;place-items:center;margin-bottom:10px;font-size:0}
+.sidebar-bottom strong{font-size:13.5px;display:block}
+.sidebar-bottom p{font-size:12px;color:var(--mut);line-height:1.5;margin:4px 0 0}
+.sidebar-bottom a{display:inline-block;margin-top:10px;font-size:12px;color:var(--teal-d);font-weight:600;text-decoration:none}
+.system-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut);padding:8px 4px 0}
+.status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#2fbf71}
+
+/* Icon nét mảnh thay ký tự Unicode */
+.nav-icon::before,.support-icon::before,.brand-mark::before,.topbar .icon-button::before,.extra-top .icon-button::before,.stat-icon::before,.attention-icon::before{
+  content:"";display:block;width:18px;height:18px;background:currentColor;-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat}
+.brand-mark {
+    --i: var(--ic-plus);
+}
+
+.brand-mark::before {
+    width: 40px;
+    height: 33px;
+    transform: scaleX(1.15);
+    transform-origin: center;
+}
+.support-icon{--i:var(--ic-heart)}
+.nav-item:nth-child(1){--i:var(--ic-grid)}.nav-item:nth-child(2){--i:var(--ic-cal)}.nav-item:nth-child(3){--i:var(--ic-user)}
+.nav-item:nth-child(4){--i:var(--ic-clock)}.nav-item:nth-child(5){--i:var(--ic-users)}.nav-item:nth-child(6){--i:var(--ic-heart)}.nav-item:nth-child(7){--i:var(--ic-shield)}
+.stat-icon,.attention-icon{font-size:0}
+.statsx>.statx:nth-child(1),.stat-card:has(#totalAppointments),.stat-card:has(#statToday){--i:var(--ic-cal)}
+.statsx>.statx:nth-child(2),.stat-card:has(#pendingAppointments){--i:var(--ic-clock)}
+.statsx>.statx:nth-child(3),.stat-card:has(#confirmedAppointments){--i:var(--ic-check)}
+.statsx>.statx:nth-child(4),.stat-card:has(#cancelledAppointments){--i:var(--ic-x)}
+.stat-card:has(#statTotal){--i:var(--ic-users)}.stat-card:has(#statNewMonth){--i:var(--ic-trend)}.stat-card:has(#statNeedUpdate){--i:var(--ic-alert)}
+.attention-item:nth-child(2){--i:var(--ic-clock)}.attention-item:nth-child(3){--i:var(--ic-cal)}.attention-item:nth-child(4){--i:var(--ic-grid)}
+
+/* ===== Topbar ===== */
+.main-area,.extra-main{margin-left:240px;width:calc(100% - 240px);min-width:0}
+.topbar,.extra-top{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 28px;font-size:13px;color:var(--mut)}
+.breadcrumbs{display:flex;align-items:center;font-size:13px;color:var(--mut);white-space:nowrap}
+.breadcrumbs span{padding:0 10px;color:#c3cccf}
+.breadcrumbs strong{color:var(--ink);font-weight:500}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.top-date{font-size:13px;color:var(--mut);white-space:nowrap}
+.icon-button,.mobile-menu{position:relative;cursor:pointer;color:#4a5f62}
+.topbar .icon-button,.extra-top .icon-button{--i:var(--ic-bell);font-size:0;width:38px;height:38px;min-width:38px;border:1px solid var(--line);border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+.topbar .icon-button:hover,.extra-top .icon-button:hover{background:var(--bg)}
+.notification-dot{position:absolute;right:10px;top:8px;width:8px;height:8px;background:var(--red);border-radius:50%}
+.profile-avatar{width:36px;height:36px;min-width:36px;border-radius:50%;background:var(--teal-l);color:var(--teal-d);display:grid;place-items:center;font-weight:700;font-size:12px}
+.profile-text{display:grid;gap:2px}
+.profile-text strong{font-size:13px;font-weight:600;color:var(--ink)}
+.profile-text small{font-size:11px;color:var(--mut)}
+.logout-form{margin:0}
+.logout-button{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 14px;color:#4a5f62;font-size:13px;cursor:pointer;white-space:nowrap;transition:background .15s}
+.logout-button:hover{background:var(--bg)}
+.mobile-menu{display:none;border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:#fff}
+
+/* ===== Nội dung và tiêu đề ===== */
+.content,.extra-content{width:100%;max-width:1650px;margin:0 auto;padding:24px 28px}
+.page-heading,.page-header,.extra-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px}
+.page-heading h1,.page-header h1,.extra-head h1{font-size:26px;font-weight:600;margin:0 0 6px;color:var(--ink)}
+.page-heading p,.subtitle,.panel-heading p{color:var(--mut);margin:0;font-size:12px;line-height:1.5}
+.heading-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ===== Nút ===== */
+.btn,.btnx,.btn-detail,.btn-confirm{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;transition:background .15s}
+.btn:hover,.btnx:hover,.btn-detail:hover{background:var(--bg)}
+.btn-primary,.btnx.primary,.extra-page .btnx:not(.light):not(.danger),body:not(.dashboard-page):not(.extra-page) .btn:not(.btn-light),.btn-confirm{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+.btn-primary:hover,.btnx.primary:hover,.extra-page .btnx:not(.light):not(.danger):hover,body:not(.dashboard-page):not(.extra-page) .btn:not(.btn-light):hover,.btn-confirm:hover{background:var(--teal-d);border-color:var(--teal-d)}
+.btn-light,.btnx.light{background:#fff;border-color:var(--line);color:var(--ink);font-weight:500}
+.btn-light:hover,.btnx.light:hover{background:var(--bg)}
+.btnx.danger{background:var(--redbg);border-color:#f3d4d6;color:var(--redt)}
+.btnx.danger:hover{background:#fbd9d9}
+.btn-detail,.btn-confirm{padding:7px 12px;font-size:12px;font-weight:600}
+.btn-detail{color:var(--teal-d)}
+.btn-detail:hover{background:var(--teal-l);border-color:var(--teal-l)}
+button:disabled{opacity:.6;cursor:wait}
+
+/* ===== Thẻ thống kê ===== */
+.stats-grid,.statsx{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.stat-card,.statx,.panel,.panelx{background:#fff;border:1px solid var(--line);border-radius:var(--r);min-width:0}
+.stat-card,.statx{padding:16px}
+.panel,.panelx{padding:18px;margin-bottom:16px}
+.stat-card>span,.statx>span{display:block;font-size:10px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;color:var(--mut)}
+.stat-card>strong,.statx>strong{display:block;font-size:26px;font-weight:600;margin:8px 0 4px;color:var(--ink)}
+.stat-card>small,.statx>small,.stat-foot{font-size:11px;line-height:1.5;color:var(--mut)}
+.stat-card:has(>.stat-top),.statx:has(>.stat-top){display:grid;grid-template-columns:38px 1fr;column-gap:12px;align-items:start}
+.stat-top{display:contents}
+.stat-top>span:first-child{grid-column:2;grid-row:1;font-size:10px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;color:var(--mut)}
+.stat-icon{grid-column:1;grid-row:1/4;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:12px}
+.stat-number{grid-column:2;grid-row:2;font-size:26px;font-weight:600;margin:2px 0;color:var(--ink)}
+.stat-top~strong{grid-column:2;grid-row:2;margin:2px 0}
+.stat-foot,.stat-top~small{grid-column:2;grid-row:3}
+.teal{background:var(--teal-l);color:var(--teal)}
+.amber{background:var(--amber);color:var(--amber-t)}
+.slate{background:var(--blue);color:var(--blue-t)}
+.red{background:var(--redbg);color:var(--redt)}
+.positive,.statx small.positive{color:var(--teal-d)}.positive span{color:var(--mut)}
+.warning-text,.statx small.warning{color:var(--amber-t)}
+.muted{color:var(--mut)}
+.stat-total{font-size:16px;color:var(--mut)}
+
+/* ===== Panel, tiêu đề panel ===== */
+.panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.panel-heading h2,.panel-title{font-size:16px;font-weight:500;margin:0 0 4px;color:var(--ink)}
+.panel-title{margin-bottom:14px}
+.panel-heading>a{color:var(--teal-d);font-size:12px;font-weight:600;text-decoration:none;white-space:nowrap}
+.middle-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:16px;margin-bottom:16px}
+.middle-grid .panel{margin-bottom:0}
+.chart-legend{display:flex;gap:18px;color:var(--mut);font-size:11px;margin:0 0 10px}
+.chart-legend span{display:flex;align-items:center}
+.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.dashboard-page .legend-dot.booked{background:var(--teal)}.dashboard-page .legend-dot.completed{background:#b9deda}
+.chart-wrap{height:260px;position:relative}
+.attention-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.attention-item:last-child{border-bottom:0;padding-bottom:0}
+.attention-icon{width:36px;height:36px;flex-shrink:0;border-radius:10px;display:grid;place-items:center}
+.attention-item strong{font-size:13px;color:var(--ink)}
+.attention-item p{margin:4px 0;color:var(--mut);font-size:12px;line-height:1.5}
+.attention-item a{color:var(--teal-d);font-size:12px;font-weight:600;text-decoration:none}
+
+/* ===== Bộ lọc, ô nhập, form ===== */
+.table-tools,.toolsx,.tools{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:center}
+.main-area input,.main-area select,.main-area textarea,.extra-main input,.extra-main select,.extra-main textarea{border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff;color:var(--ink);font-size:13px;min-width:0;min-height:38px}
+.main-area input:focus,.main-area select:focus,.extra-main input:focus,.extra-main select:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px rgba(15,143,128,.1)}
+.table-tools input,.toolsx input,.tools input{flex:1;min-width:200px}
+.formx,.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.formx label,.form-grid label,.fieldx{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#4a5f62}
+.formx input,.formx select,.form-grid input,.form-grid select,.fieldx input,.fieldx select{width:100%}
+.formx .wide{grid-column:1/-1}
+.form-actions{display:flex;gap:10px;margin-top:16px}
+.date-filter{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:12px 0 16px}
+.date-filter label{font-size:12px;color:#4a5f62}
+.price-note{font-size:12px;color:var(--mut);margin:14px 0 0;line-height:1.5}
+.flash,.flashx{padding:11px 14px;border-radius:12px;margin-bottom:12px;font-size:13px;background:var(--teal-l);color:var(--teal-d)}
+.flash.error,.flashx.error{background:var(--redbg);color:var(--redt)}
+
+/* ===== Bảng ===== */
+.table-scroll,.table-wrap,div.tablex{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+.appointments-panel{padding:18px 0 0;overflow:hidden}
+.appointments-panel .appointment-heading,.appointments-panel .table-tools{padding:0 18px}
+.appointments-panel .table-scroll{border-left:0;border-right:0;border-radius:0}
+table{width:100%;border-collapse:collapse;white-space:nowrap;text-align:left}
+table.tablex{min-width:850px}
+thead{background:#f6fafa}
+th{font-size:10.5px;letter-spacing:.3px;color:var(--mut);font-weight:600;padding:12px;text-align:left;white-space:nowrap}
+td{padding:12px;border-top:1px solid var(--line);color:#4a5f62;font-size:13px;vertical-align:middle}
+th:first-child,td:first-child{padding-left:18px}
+tbody tr:hover{background:#fafcfc}
+td strong{display:block;color:var(--ink);font-weight:600}
+td small,.subline{display:block;color:var(--mut);font-size:11.5px;margin-top:3px}
+.code-cell,.fee{color:var(--teal-d);font-weight:600}
+.doctor-name{font-weight:600;color:var(--ink)}
+.table-empty,.emptyx{padding:24px;text-align:center;color:var(--mut);font-size:13px}
+td.table-empty,td.emptyx{border-top:0}
+
+/* ===== Nhãn trạng thái ===== */
+.status-pill,.pillx{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:5px 10px;font-size:11.5px;background:#e8f3ef;color:var(--teal-d)}
+.status-pill i{width:6px;height:6px;border-radius:50%;background:currentColor;display:block}
+.dashboard-page .pillx::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.status-pill.confirmed{background:#e8f3ef;color:var(--teal-d)}
+.status-pill.pending,.pillx.pending,.extra-page .pillx.off{background:var(--amber);color:var(--amber-t)}
+.status-pill.cancelled,.status-pill.off,.dashboard-page .pillx.off{background:var(--redbg);color:var(--redt)}
+
+/* ===== Phân trang ===== */
+.pagination{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin-top:18px}
+.pagination a,.pagination span{min-width:34px;height:34px;padding:0 10px;display:inline-flex;justify-content:center;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;color:#4a5f62;text-decoration:none;font-size:13px}
+.pagination a:hover{border-color:var(--teal);color:var(--teal-d)}
+.pagination .current{background:var(--teal);border-color:var(--teal);color:#fff}
+.pagination .disabled{color:#b7c0c7;background:var(--bg)}
+.pagination-info{text-align:center;color:var(--mut);font-size:12px;margin:12px 0 0}
+
+/* ===== Lịch làm việc ===== */
+.schedule-legend{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0;color:#4a5f62;font-size:12px}
+.schedule-legend span{display:flex;align-items:center;gap:6px}
+.extra-page .legend-dot{width:11px;height:11px;border-radius:3px;margin:0}
+.legend-dot.available{background:#38b879}.extra-page .legend-dot.booked{background:#4387ed}.extra-page .legend-dot.off{background:#aab3bd}
+.schedule-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.time-card{min-width:0;min-height:120px;padding:14px;border:1px solid transparent;border-radius:14px}
+.time-card.available{background:var(--teal-l);border-color:#cfe9e4}
+.time-card.booked{background:var(--blue);border-color:#d3def0}
+.time-card.off{background:#f0f2f3;border-color:#e0e5e7;color:#6c7b80}
+.time-card-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:13px}
+.slot-status{font-size:11px;font-weight:600}
+.appointment-mini{margin-top:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,.85);display:flex;flex-direction:column;gap:4px;font-size:12px;overflow-wrap:anywhere}
+.appointment-mini small{color:var(--mut);margin:0}
+.slot-empty{font-size:12px;margin:16px 0 0;color:var(--mut)}
+
+/* ===== Hộp hồ sơ bác sĩ ===== */
+.profile-overlay,.patient-modal{position:fixed;inset:0;background:rgba(20,40,43,.45);z-index:1000;display:flex;justify-content:center;align-items:flex-start;padding:30px 15px;overflow-y:auto}
+.patient-modal{align-items:center;z-index:2000}
+.profile-modal,.patient-modal-content{width:100%;max-width:860px;background:var(--bg);border-radius:20px;overflow:hidden;margin:auto;box-shadow:0 20px 60px rgba(20,40,43,.2)}
+.patient-modal-content{max-width:960px;max-height:94vh;overflow-y:auto}
+.profile-top,.patient-modal-header{background:var(--teal-d);color:#fff;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.profile-top h2,.patient-modal-header h2{font-size:18px;margin:0}
+.profile-top p,.patient-modal-header p{font-size:12px;margin:4px 0 0;color:#d4ece8}
+.profile-close,.patient-modal-header button{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:13px}
+.profile-body,.patient-modal-body{padding:20px}
+.profile-hero,.patient-profile{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;gap:16px;align-items:center;margin-bottom:14px}
+.profile-hero .profile-avatar,.patient-avatar{width:68px;height:68px;min-width:68px;border-radius:50%;background:var(--teal-l);color:var(--teal-d);display:grid;place-items:center;font-size:22px;font-weight:700}
+.profile-name,.patient-profile h2{font-size:19px;font-weight:600;color:var(--ink);margin:0 0 6px}
+.profile-meta,.patient-profile p{font-size:12.5px;color:var(--mut);line-height:1.7;margin:2px 0}
+.profile-grid,.patient-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.profile-card,.detail-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px;min-width:0}
+.profile-card h3,.detail-card h3{font-size:14px;color:var(--teal-d);margin:0 0 12px}
+.profile-card p,.detail-card p{font-size:12.5px;color:#4a5f62;line-height:1.7;margin:6px 0;overflow-wrap:anywhere}
+.profile-card strong,.detail-card strong{color:var(--ink)}
+.profile-stat,.patient-detail-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.profile-stat>div,.detail-stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.profile-stat span,.detail-stat span{display:block;color:var(--mut);font-size:11px;margin-bottom:6px}
+.profile-stat strong,.detail-stat strong{display:block;font-size:18px;color:var(--ink);font-weight:600}
+.profile-table{width:100%;border-collapse:collapse;font-size:12px;white-space:normal}
+.profile-table th,.profile-table td{padding:10px 8px;border-bottom:1px solid var(--line);border-top:0;text-align:left;padding-left:8px}
+.profile-note{font-size:11px;color:var(--mut);line-height:1.6;margin-top:12px}
+.profile-loading,.profile-error{text-align:center;padding:40px 15px;color:var(--mut);font-size:13px}
+.profile-error{color:var(--redt)}
+.profile-footer{display:flex;justify-content:flex-end;padding:0 20px 20px}
+.patient-history{margin-bottom:0}
+
+.footer,.footx{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--mut);font-size:11.5px;padding:16px 1px 4px}
+.toast{position:fixed;right:24px;bottom:24px;max-width:350px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;box-shadow:0 8px 25px rgba(20,40,43,.25);font-size:13px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:3000}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ===== Responsive ===== */
+@media(max-width:1100px){
+  .sidebar{width:220px}.main-area,.extra-main{margin-left:220px;width:calc(100% - 220px)}
+  .content,.extra-content{padding:20px}.topbar,.extra-top{padding:0 20px}
+  .stats-grid,.statsx{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .middle-grid{grid-template-columns:minmax(0,1.3fr) minmax(260px,1fr)}
+  .schedule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.formx,.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .top-date{display:none}
+}
+@media(max-width:850px){
+  body:has(.mobile-menu) .sidebar{transform:translateX(-100%);transition:transform .2s;width:240px;box-shadow:8px 0 30px rgba(20,40,43,.08)}
+  body:has(.mobile-menu) .sidebar.open{transform:translateX(0)}
+  body:has(.mobile-menu) .main-area{margin-left:0;width:100%}
+  body:not(:has(.mobile-menu)) .sidebar{width:62px;padding:14px 8px;overflow:hidden}
+  body:not(:has(.mobile-menu)) .extra-main{margin-left:62px;width:calc(100% - 62px)}
+  body:not(:has(.mobile-menu)) .brand>div,body:not(:has(.mobile-menu)) .nav-label,body:not(:has(.mobile-menu)) .nav-item>span:not(.nav-icon),body:not(:has(.mobile-menu)) .sidebar-bottom,body:not(:has(.mobile-menu)) .system-status{display:none}
+  body:not(:has(.mobile-menu)) .nav-item{justify-content:center;padding:10px 0}
+  .mobile-menu{display:block;margin-right:12px}
+  .breadcrumbs{margin-right:auto}
+  .topbar{justify-content:flex-start;padding:0 16px}.topbar-right{margin-left:auto}
+  .content,.extra-content{padding:16px 14px}.middle-grid{grid-template-columns:1fr}
+  .profile-grid,.patient-detail-grid,.profile-stat,.patient-detail-stats{grid-template-columns:1fr}
+  .page-heading h1,.page-header h1,.extra-head h1{font-size:22px}
+}
+@media(max-width:560px){
+  .profile-text,.topbar .icon-button,.extra-top .icon-button{display:none}
+  .page-heading,.page-header,.extra-head{flex-direction:column;align-items:flex-start}
+  .stats-grid,.statsx,.schedule-grid,.formx,.form-grid{grid-template-columns:1fr}
+  .table-tools,.toolsx,.tools{flex-direction:column;align-items:stretch}
+  .extra-top{height:auto;padding:12px 14px;flex-wrap:wrap}
+  .chart-wrap{height:220px}.footer,.footx{flex-direction:column}
+  .profile-hero,.patient-profile{align-items:flex-start;padding:14px}
+}
+@media(prefers-reduced-motion:reduce){.sidebar,.nav-item,.toast{transition:none}}

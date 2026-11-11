@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập bác sĩ | MediCare</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='doctor-login.css') }}">
+</head>
+<body>
+  <main class="login-layout">
+    <section class="login-visual">
+      <div class="visual-brand">
+        <div class="brand-mark">✚</div>
+        <div><div class="brand-name">MediCare</div><div class="brand-sub">CỔNG THÔNG TIN BÁC SĨ</div></div>
+      </div>
+      <div class="visual-copy">
+        <span class="eyebrow">CỔNG THÔNG TIN BÁC SĨ</span>
+        <h1>Tận tâm chăm sóc.<br>Kết nối sức khỏe.</h1>
+        <p>Quản lý lịch khám, theo dõi bệnh nhân và cập nhật hồ sơ khám bệnh trên MediCare.</p>
+        <div class="visual-feature"><span>✓</span> Theo dõi lịch khám của tôi</div>
+        <div class="visual-feature"><span>✓</span> Quản lý bệnh nhân được phân công</div>
+        <div class="visual-feature"><span>✓</span> Cập nhật kết quả khám bệnh</div>
+      </div>
+      <div class="visual-footer">© 2026 MediCare · Hệ thống quản lý đặt lịch khám</div>
+      <div class="decor decor-one"></div><div class="decor decor-two"></div>
+    </section>
+
+    <section class="login-side">
+      <div class="login-card">
+        <div class="mobile-brand">
+          <div class="brand-mark">✚</div><div class="brand-name">MediCare</div>
+        </div>
+        <div class="login-icon">✚</div>
+        <h2>Đăng nhập bác sĩ</h2>
+        <p class="login-intro">Vui lòng đăng nhập bằng tài khoản bác sĩ được cấp.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('doctor_login') }}">
+          <label for="username">Tên đăng nhập</label>
+          <div class="input-wrap"><span>♙</span><input id="username" name="username" type="text" placeholder="Nhập tên đăng nhập" autocomplete="username" required autofocus></div>
+
+          <label for="password">Mật khẩu</label>
+          <div class="input-wrap"><span>♧</span><input id="password" name="password" type="password" placeholder="Nhập mật khẩu" autocomplete="current-password" required><button class="show-password" type="button" id="togglePassword" aria-label="Hiện hoặc ẩn mật khẩu">Hiện</button></div>
+
+          <button class="login-button" type="submit">Đăng nhập <span>→</span></button>
+        </form>
+        <div class="security-note"><span>▣</span><span>Chỉ dành cho bác sĩ được cấp tài khoản MediCare.</span></div>
+      </div>
+    </section>
+  </main>
+<script>
+  const toggle = document.getElementById('togglePassword');
+  const password = document.getElementById('password');
+  toggle.addEventListener('click', () => {
+    const show = password.type === 'password';
+    password.type = show ? 'text' : 'password';
+    toggle.textContent = show ? 'Ẩn' : 'Hiện';
+  });
+</script>
+</body>
+</html>

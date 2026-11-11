@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediCare | Chuyên khoa &amp; dịch vụ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='chuyen-khoa.css') }}">
+</head>
+<body class="ck-page">
+<div class="app-shell">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}">
+      <div class="brand-mark">✚</div>
+      <div>
+        <div class="brand-name">MediCare</div>
+        <div class="brand-sub">HỆ THỐNG QUẢN TRỊ</div>
+      </div>
+    </a>
+    <div class="nav-label">KHÔNG GIAN LÀM VIỆC</div>
+    <nav class="nav-menu">
+      <a class="nav-item" href="{{ url_for('dashboard') }}"><span class="nav-icon">▦</span><span>Tổng quan</span></a>
+      <a class="nav-item" href="{{ url_for('appointments_page') }}"><span class="nav-icon">▣</span><span>Quản lý lịch hẹn</span>
+      <span class="nav-count" id="pendingCount">
+        {{ pending_count if pending_count is not none else '—' }}
+      </span>
+      </a>
+      <a class="nav-item" href="{{ url_for('doctors_page') }}"><span class="nav-icon">♧</span><span>Quản lý bác sĩ</span></a>
+      <a class="nav-item" href="{{ url_for('schedule_page') }}"><span class="nav-icon">▦</span><span>Lịch làm việc</span></a>
+      <a class="nav-item" href="{{ url_for('patients') }}"><span class="nav-icon">♙</span><span>Quản lý bệnh nhân</span></a>
+      <a class="nav-item active" href="{{ url_for('specialties_page') }}"><span class="nav-icon">♡</span><span>Chuyên khoa &amp; dịch vụ</span></a>
+      <a class="nav-item" href="#accounts"><span class="nav-icon">♧</span><span>Tài khoản &amp; phân quyền</span></a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="support-icon">☏</div>
+      <strong>Cần hỗ trợ vận hành?</strong>
+      <p>Đội ngũ MediCare luôn sẵn sàng hỗ trợ bạn.</p>
+      <a href="mailto:support@medicare.local">Trung tâm trợ giúp ↗</a>
+    </div>
+    <div class="system-status"><span class="status-dot"></span>Hệ thống hoạt động ổn định</div>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <div class="main-area">
+    <header class="topbar">
+      <button class="mobile-menu" id="menuBtn" type="button" aria-label="Mở menu">☰</button>
+      <div class="breadcrumbs">Quản trị <span>/</span> <strong>Chuyên khoa &amp; dịch vụ</strong></div>
+      <div class="topbar-right">
+        <div class="top-date" id="topDate">Hôm nay, {{ today }}</div>
+        <button class="icon-button" type="button" title="Thông báo">♧<i class="notification-dot"></i></button>
+        <div class="profile-avatar">AD</div>
+        <div class="profile-text"><strong>{{ admin_username }}</strong><small>Quản trị viên</small></div>
+        <form class="logout-form" method="post" action="{{ url_for('logout') }}">
+          <button class="logout-button" type="submit">↪ Đăng xuất</button>
+        </form>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-heading">
+        <div>
+          <h1>Chuyên khoa &amp; dịch vụ</h1>
+          <p>Tổ chức danh mục khám, cập nhật phí và trạng thái tiếp nhận.</p>
+        </div>
+        <div class="heading-actions">
+          <button class="btn btn-light" type="button" id="btnAddSpec">+ Thêm chuyên khoa</button>
+          <button class="btn" type="button" id="btnAddService">+ Thêm dịch vụ</button>
+        </div>
+      </div>
+
+      <div class="flash" id="flash" hidden></div>
+
+      <!-- Thống kê -->
+      <section class="stats-grid ck-stats">
+        <div class="stat-card ck-stat">
+          <b class="ck-num" id="statSpec">0</b>
+          <div><strong>Chuyên khoa</strong><small id="statSpecSub">&nbsp;</small></div>
+        </div>
+        <div class="stat-card ck-stat">
+          <b class="ck-num" id="statSvc">0</b>
+          <div><strong>Dịch vụ khám</strong><small id="statSvcSub">&nbsp;</small></div>
+        </div>
+        <div class="stat-card ck-stat">
+          <b class="ck-num" id="statFee">0 ₫</b>
+          <div><strong>Phí khám từ</strong><small>Đã bao gồm phí tư vấn</small></div>
+        </div>
+      </section>
+
+      <div class="ck-grid">
+        <!-- Cột trái: chuyên khoa -->
+        <aside class="panel ck-spec">
+          <h2 class="panel-title ck-title">Chuyên khoa</h2>
+          <p class="ck-hint">Chọn để quản lý dịch vụ</p>
+          <div class="table-tools"><input type="search" id="specSearch" placeholder="Tìm chuyên khoa..."></div>
+          <div class="ck-spec-list" id="specList"></div>
+        </aside>
+
+        <!-- Cột phải -->
+        <div class="ck-right">
+          <section class="panel ck-services">
+            <div class="panel-heading">
+              <div>
+                <h2 id="svcTitle">Dịch vụ</h2>
+                <p id="svcSub"></p>
+              </div>
+              <a href="#" id="editSpecLink">Sửa chuyên khoa →</a>
+            </div>
+            <div class="table-tools">
+              <input type="search" id="svcSearch" placeholder="Tìm tên hoặc mã dịch vụ...">
+              <select id="svcStatus">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">Hoạt động</option>
+                <option value="paused">Tạm ngưng</option>
+              </select>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>MÃ / TÊN DỊCH VỤ</th><th>THỜI LƯỢNG</th><th>PHÍ KHÁM</th><th>TRẠNG THÁI</th><th>THAO TÁC</th></tr>
+                </thead>
+                <tbody id="svcBody"></tbody>
+              </table>
+            </div>
+            <p class="price-note" id="svcFoot"></p>
+          </section>
+
+          <section class="panel ck-config">
+            <h2 class="panel-title ck-title">Cấu hình dịch vụ</h2>
+            <p class="ck-hint" id="cfgSub"></p>
+            <form id="cfgForm" class="form-grid ck-form" autocomplete="off">
+              <label class="wide-2" id="nameWrap">Tên dịch vụ
+                <input type="text" id="cfgName" required maxlength="120">
+              </label>
+              <label>Phí khám (VNĐ)
+                <input type="text" id="cfgFee" inputmode="numeric" required>
+              </label>
+              <label>Thời lượng mỗi lượt
+                <select id="cfgDur">
+                  <option value="15">15 phút</option><option value="20">20 phút</option>
+                  <option value="30">30 phút</option><option value="45">45 phút</option>
+                  <option value="60">60 phút</option>
+                </select>
+              </label>
+              <label>Trạng thái
+                <select id="cfgStatus">
+                  <option value="active">Đang hoạt động</option>
+                  <option value="paused">Tạm ngưng</option>
+                </select>
+              </label>
+            </form>
+            <div class="ck-cfg-foot">
+              <span class="price-note">Lưu ý: Các thay đổi trên trang này hiện chỉ được lưu trên trình duyệt, chưa cập nhật SQL Server.</span>
+              <div class="form-actions">
+                <button class="btn btn-light" type="button" id="btnReset">Hủy thay đổi</button>
+                <button class="btn" type="submit" form="cfgForm">Lưu thay đổi</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="footer"><span>© 2026 MediCare · Nền tảng quản lý đặt lịch khám</span><span id="syncTime"></span></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="{{ url_for('static', filename='chuyen-khoa.js') }}"></script>
+
+</body>
+</html>

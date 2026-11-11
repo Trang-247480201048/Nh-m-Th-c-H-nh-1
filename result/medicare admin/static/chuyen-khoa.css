@@ -1,0 +1,428 @@
+
+/* CSS riêng cho trang chuyên khoa */
+/* Không ảnh hưởng giao diện Dashboard */
+
+.ck-page {
+  background: #f4f7fb;
+  color: #243b42;
+}
+
+.ck-page .content {
+  padding: 30px 26px 16px;
+  max-width: 1700px;
+  margin: 0 auto;
+}
+
+.ck-page .page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.ck-page .page-heading h1 {
+  font-size: 26px;
+  font-weight: 750;
+  margin: 0 0 8px;
+}
+
+.ck-page .page-heading p {
+  font-size: 13px;
+  color: #819099;
+  margin: 0;
+}
+
+.ck-page .heading-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ck-page .heading-actions .btn {
+  white-space: nowrap;
+  background: #078f98;
+  color: white;
+  border: 1px solid #078f98;
+  border-radius: 8px;
+  padding: 11px 17px;
+  cursor: pointer;
+}
+
+.ck-page .heading-actions .btn-light {
+  background: white;
+  color: #41535b;
+  border-color: #e4e9ed;
+}
+
+/* 3 ô thống kê */
+.ck-page .ck-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.ck-page .ck-stat {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 86px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #e9eef1;
+  border-radius: 11px;
+  box-shadow: 0 2px 10px rgba(30,70,80,.025);
+}
+
+.ck-page .ck-num {
+  color: #128d96;
+  font-size: 26px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ck-page .ck-stat strong {
+  font-size: 13px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ck-page .ck-stat small {
+  display: block;
+  font-size: 11px;
+  color: #849299;
+}
+
+/* Bố cục 2 cột */
+.ck-page .ck-grid {
+  display: grid;
+  grid-template-columns: minmax(240px,28%) minmax(0,1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.ck-page .ck-right {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.ck-page .ck-grid .panel {
+  background: #fff;
+  border: 1px solid #e8edf0;
+  border-radius: 11px;
+  box-shadow: 0 2px 10px rgba(30,70,80,.025);
+  padding: 18px;
+  min-width: 0;
+}
+
+.ck-page .ck-title,
+.ck-page .ck-services h2 {
+  font-size: 16px;
+  margin: 0 0 6px;
+  font-weight: 650;
+}
+
+.ck-page .ck-hint,
+.ck-page .ck-services .panel-heading p {
+  font-size: 12px;
+  color: #8a979e;
+  margin: 0 0 14px;
+}
+
+/* Tìm kiếm và bộ lọc */
+.ck-page .ck-grid .table-tools {
+  display: flex;
+  gap: 10px;
+  margin: 13px 0 14px;
+}
+
+.ck-page .ck-grid input,
+.ck-page .ck-grid select {
+  border: 1px solid #e3e9ed;
+  border-radius: 7px;
+  padding: 10px 12px;
+  background: white;
+  color: #34464e;
+  min-width: 0;
+  font: inherit;
+  font-size: 13px;
+}
+
+.ck-page .ck-grid .table-tools input {
+  width: 100%;
+  flex: 1;
+}
+
+.ck-page .ck-grid .table-tools select {
+  width: 160px;
+}
+
+/* Danh sách chuyên khoa bên trái */
+.ck-page .ck-spec-list {
+  display: grid;
+  gap: 5px;
+}
+
+.ck-page .ck-spec-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background .15s;
+}
+
+.ck-page .ck-spec-item:hover {
+  background: #f3f9fa;
+}
+
+.ck-page .ck-spec-item.active {
+  background: #e5f6f5;
+  border-color: #d3eeec;
+}
+
+.ck-page .ck-spec-item strong {
+  font-size: 13px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ck-page .ck-spec-item small {
+  font-size: 11px;
+  color: #839198;
+  display: block;
+  margin-top: 3px;
+}
+
+.ck-page .ck-spec-item.active strong {
+  color: #087f87;
+}
+
+.ck-page .ck-spec-item .ck-arrow {
+  color: #8d9ba0;
+  font-size: 20px;
+}
+
+/* Bảng dịch vụ */
+.ck-page .ck-services .panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ck-page .ck-services .panel-heading a {
+  color: #078f98;
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ck-page .table-scroll {
+  overflow-x: auto;
+}
+
+.ck-page .ck-services table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+}
+
+.ck-page .ck-services th {
+  background: #f8fafb;
+  text-align: left;
+  color: #87949b;
+  font-size: 10px;
+  letter-spacing: .03em;
+  padding: 13px 12px;
+  white-space: nowrap;
+}
+
+.ck-page .ck-services td {
+  padding: 15px 12px;
+  border-bottom: 1px solid #edf0f2;
+  vertical-align: middle;
+}
+
+.ck-page .ck-services tbody tr:hover {
+  background: #f5faf9;
+}
+
+.ck-page .ck-services td strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ck-page .ck-services td small {
+  display: block;
+  color: #8b999e;
+}
+
+.ck-page .ck-services .status-pill {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 11px;
+  background: #e8f7f0;
+  color: #19866a;
+  white-space: nowrap;
+}
+
+.ck-page .ck-services .status-pill.paused {
+  background: #fff0f1;
+  color: #c16d73;
+}
+
+.ck-page .ck-services .btn-detail {
+  border: 0;
+  background: none;
+  color: #078f98;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.ck-page .ck-services .price-note {
+  color: #8b999e;
+  font-size: 11px;
+  margin: 12px 0 0;
+}
+
+/* Khu vực cấu hình dịch vụ */
+.ck-page .ck-config .ck-form {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.ck-page .ck-config .ck-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #7d8b92;
+}
+
+.ck-page .ck-config .ck-form label.wide-2 {
+  grid-column: span 3;
+}
+
+.ck-page .ck-config .ck-form input,
+.ck-page .ck-config .ck-form select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ck-page .ck-cfg-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.ck-page .ck-cfg-foot .price-note {
+  font-size: 11px;
+  color: #89969d;
+  max-width: 440px;
+}
+
+.ck-page .ck-cfg-foot .form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ck-page .ck-cfg-foot .btn {
+  border: 1px solid #078f98;
+  background: #078f98;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.ck-page .ck-cfg-foot .btn-light {
+  background: white;
+  color: #51636a;
+  border-color: #e5e9ed;
+}
+
+/* Footer và thông báo */
+.ck-page .footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+  font-size: 11px;
+  color: #8d999f;
+}
+
+.ck-page .toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #183f43;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 9px;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: .2s;
+  z-index: 9999;
+}
+
+.ck-page .toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1050px) {
+  .ck-page .ck-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ck-page .ck-spec-list {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .ck-page .content {
+    padding: 18px 12px;
+  }
+
+  .ck-page .page-heading {
+    flex-direction: column;
+  }
+
+  .ck-page .ck-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .ck-page .ck-spec-list {
+    grid-template-columns: 1fr;
+  }
+
+  .ck-page .ck-config .ck-form {
+    grid-template-columns: 1fr;
+  }
+
+  .ck-page .ck-config .ck-form label.wide-2 {
+    grid-column: span 1;
+  }
+
+  .ck-page .ck-grid .table-tools {
+    flex-wrap: wrap;
+  }
+
+  .ck-page .ck-grid .table-tools select {
+    width: 100%;
+  }
+}
