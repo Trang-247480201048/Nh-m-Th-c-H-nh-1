@@ -1,168 +1,592 @@
-/* =========================
-   TRANG ĐĂNG KÝ
-========================= */
 
-.register-container {
-    min-height: calc(100vh - 70px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 50px 20px;
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --mc-teal: #0f8f80;
+  --mc-deep: #0b6f63;
+  --mc-ink: #172c30;
+  --mc-muted: #71858a;
+  --mc-line: #e3ecec;
+  --mc-mint: #e3f4f1;
 }
 
-.register-card {
-    width: 100%;
-    max-width: 700px;
-    background: #ffffff;
-    padding: 40px;
-    border-radius: 14px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body.mc-auth-page {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #edf8f7 0%, #f8fcfc 52%, #e2f5f2 100%);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  color: var(--mc-ink);
+  font-size: 13px;
 }
 
-.register-title {
-    text-align: center;
-    margin-bottom: 30px;
+.mc-auth-page a {
+  text-decoration: none;
+  color: var(--mc-deep);
 }
 
-.register-title h1 {
-    margin-bottom: 10px;
+.mc-auth-page button,
+.mc-auth-page input {
+  font: inherit;
 }
 
-.register-title p {
-    color: #607d8b;
+/* KHUNG CHIA ĐÔI */
+.mc-auth-shell {
+  max-width: 1240px;
+  margin: 34px auto;
+  padding: 0 22px;
 }
 
-
-/* FORM */
-
-.register-card .form-group {
-    margin-bottom: 20px;
+.mc-auth-layout {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  min-height: 730px;
+  background: white;
+  border: 1px solid #d8eeeb;
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 20px 70px rgba(10, 89, 82, .10);
 }
 
-.register-card label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
+/* CỘT TRÁI */
+.mc-auth-showcase {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, #f9fefe 4%, #e6f8f5 60%, #bcece6 100%);
+  padding: 37px 42px 0;
+  min-height: 730px;
 }
 
-.register-card input[type="text"],
-.register-card input[type="email"],
-.register-card input[type="tel"],
-.register-card input[type="date"],
-.register-card input[type="password"] {
-    width: 100%;
-    padding: 13px 14px;
-    border: 1px solid #d5e0e3;
-    border-radius: 8px;
-    font-size: 15px;
-    box-sizing: border-box;
-    outline: none;
+.mc-auth-showcase::before {
+  content: '';
+  position: absolute;
+  width: 570px;
+  height: 570px;
+  border-radius: 50%;
+  background: rgba(108, 209, 198, .22);
+  right: -245px;
+  top: 40px;
 }
 
-.register-card input:focus {
-    border-color: #087f8c;
-    box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.1);
+.mc-auth-showcase::after {
+  content: '+';
+  position: absolute;
+  right: 45px;
+  top: 135px;
+  color: #8cdad1;
+  font-size: 95px;
+  font-weight: 700;
+  opacity: .55;
 }
 
-
-/* ERROR */
-
-.register-card small {
-    display: block;
-    margin-top: 5px;
-    color: #d32f2f;
-    font-size: 13px;
+/* LOGO */
+.mc-auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
 }
 
-
-/* TERMS */
-
-.terms {
-    display: flex !important;
-    align-items: flex-start;
-    gap: 8px;
-    font-weight: normal !important;
-    margin: 5px 0 20px;
+.mc-auth-logo-mark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--mc-mint);
+  color: var(--mc-teal);
+  font-size: 43px;
+  line-height: 1;
+  font-weight: 600;
 }
 
-.terms input {
-    margin-top: 4px;
-    width: auto;
+.mc-auth-logo strong {
+  display: block;
+  color: var(--mc-deep);
+  font-size: 27px;
+  letter-spacing: -1px;
 }
 
-.terms a {
-    color: #087f8c;
-    text-decoration: none;
+.mc-auth-logo small {
+  display: block;
+  color: var(--mc-teal);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .55px;
+  margin-top: 2px;
 }
 
-
-/* BUTTON */
-
-.register-submit {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    background: #087f8c;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
+/* GIỚI THIỆU */
+.mc-showcase-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 385px;
+  margin-top: 70px;
 }
 
-.register-submit:hover {
-    background: #066d76;
+.mc-showcase-copy h1 {
+  font-size: clamp(30px, 3vw, 42px);
+  line-height: 1.3;
+  letter-spacing: -1.2px;
+  margin: 0 0 18px;
+  font-weight: 800;
 }
 
-
-/* MESSAGE */
-
-.register-message {
-    display: none;
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 8px;
-    text-align: center;
+.mc-showcase-copy h1 span {
+  color: var(--mc-teal);
 }
 
-.register-message.success {
-    display: block;
-    background: #e8f5e9;
-    color: #2e7d32;
+.mc-showcase-copy > p {
+  font-size: 12px;
+  line-height: 1.9;
+  color: #5e777b;
+  margin: 0 0 24px;
+  max-width: 340px;
 }
 
-.register-message.error {
-    display: block;
-    background: #ffebee;
-    color: #c62828;
+.mc-showcase-benefits {
+  display: grid;
+  gap: 17px;
 }
 
+.mc-showcase-benefit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 340px;
+}
 
-/* LOGIN LINK */
+.mc-showcase-benefit > span {
+  width: 43px;
+  height: 43px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .87);
+  color: var(--mc-teal);
+  font-size: 22px;
+}
 
-.login-link {
-    text-align: center;
+.mc-showcase-benefit strong {
+  display: block;
+  font-size: 12px;
+}
+
+.mc-showcase-benefit small {
+  display: block;
+  font-size: 10px;
+  color: #70888b;
+  line-height: 1.6;
+  margin-top: 3px;
+}
+
+/* HÌNH BÁC SĨ */
+.mc-showcase-photo {
+  position: absolute;
+  bottom: -10px;
+  right: -105px;
+  width: 84%;
+  height: 57%;
+  z-index: 1;
+  object-fit: cover;
+  object-position: 74% 47%;
+  border-radius: 55% 0 0 0;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 13%, black 100%);
+  opacity: .94;
+}
+
+.mc-showcase-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(100deg, #0e9c90, #63d5c9);
+  clip-path: polygon(0 75%, 36% 100%, 100% 5%, 100% 100%, 0 100%);
+  z-index: 2;
+}
+
+/* CỘT FORM BÊN PHẢI */
+.mc-auth-right {
+  padding: 50px clamp(25px, 4.3vw, 66px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* NÚT CHUYỂN ĐĂNG NHẬP / ĐĂNG KÝ */
+.mc-auth-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: #f0f7f7;
+  border: 1px solid #e0eded;
+  border-radius: 13px;
+  padding: 5px;
+  margin-bottom: 28px;
+}
+
+.mc-auth-switch a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px;
+  border-radius: 10px;
+  color: #526c70;
+  font-weight: 700;
+}
+
+.mc-auth-switch a.active {
+  background: var(--mc-teal);
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(15, 143, 128, .18);
+}
+
+/* TIÊU ĐỀ */
+.mc-auth-page .login-title,
+.mc-auth-page .register-title {
+  text-align: center;
+  margin: 0 0 26px;
+}
+
+.mc-auth-page .login-title h1,
+.mc-auth-page .register-title h1 {
+  font-size: 30px;
+  letter-spacing: -.6px;
+  margin: 0 0 8px;
+  color: var(--mc-ink);
+  font-weight: 800;
+}
+
+.mc-auth-page .login-title p,
+.mc-auth-page .register-title p {
+  color: var(--mc-muted);
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.7;
+}
+
+/* INPUT */
+.mc-auth-page .form-group {
+  margin-bottom: 17px;
+  min-width: 0;
+}
+
+.mc-auth-page .form-group > label {
+  display: block;
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: #26383c;
+}
+
+.mc-auth-page .form-group input {
+  width: 100%;
+  height: 47px;
+  padding: 11px 14px;
+  border: 1px solid #dce7e8;
+  border-radius: 10px;
+  background: #fff;
+  outline: none;
+  color: var(--mc-ink);
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.mc-auth-page .form-group input:focus {
+  border-color: var(--mc-teal);
+  box-shadow: 0 0 0 3px rgba(15, 143, 128, .1);
+}
+
+.mc-auth-page .form-group input::placeholder {
+  color: #99a9ac;
+}
+
+.mc-auth-page .form-group small {
+  display: block;
+  color: #c43f3f;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.mc-auth-page .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* GHI NHỚ ĐĂNG NHẬP */
+.mc-auth-page .login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 23px;
+}
+
+.mc-auth-page .remember,
+.mc-auth-page .terms {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+  color: #53696d;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.mc-auth-page .terms {
+  align-items: flex-start;
+  margin: 7px 0 18px;
+  line-height: 1.7;
+}
+
+.mc-auth-page input[type="checkbox"] {
+  accent-color: var(--mc-teal);
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.mc-auth-page .login-options a {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* NÚT GỬI FORM */
+.mc-auth-page .login-submit,
+.mc-auth-page .register-submit {
+  width: 100%;
+  min-height: 49px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #0b8d81, #0fa494);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(15, 143, 128, .14);
+}
+
+.mc-auth-page .login-submit:hover,
+.mc-auth-page .register-submit:hover {
+  filter: brightness(.96);
+}
+
+.mc-auth-page .login-submit:disabled,
+.mc-auth-page .register-submit:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+/* LINK CHUYỂN TRANG */
+.mc-auth-page .register-link,
+.mc-auth-page .login-link {
+  text-align: center;
+  margin-top: 24px;
+  color: #71858a;
+  font-size: 12px;
+}
+
+.mc-auth-page .register-link a,
+.mc-auth-page .login-link a {
+  font-weight: 700;
+}
+
+/* THÔNG BÁO */
+.mc-auth-page .login-message,
+.mc-auth-page .register-message {
+  display: none;
+  margin-top: 12px;
+  border-radius: 9px;
+  padding: 11px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.mc-auth-page .login-message.success,
+.mc-auth-page .register-message.success {
+  display: block;
+  background: #e4f5eb;
+  color: #1b7a4b;
+}
+
+.mc-auth-page .login-message.error,
+.mc-auth-page .register-message.error {
+  display: block;
+  background: #fff0ef;
+  color: #a82c2c;
+}
+
+.mc-auth-page #termsError {
+  display: block;
+  color: #c43f3f;
+  font-size: 11px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+/* QUAY VỀ TRANG CHỦ */
+.mc-auth-back {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 11px;
+}
+
+.mc-auth-back a {
+  color: #648185;
+}
+
+.mc-auth-back a:hover {
+  color: var(--mc-teal);
+}
+
+.mc-auth-note {
+  text-align: center;
+  color: #799397;
+  font-size: 10px;
+  margin: 16px 0 0;
+}
+
+/* TINH CHỈNH RIÊNG CHO ĐĂNG KÝ */
+.mc-auth-page.mc-register .mc-auth-right {
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+.mc-auth-page.mc-register .mc-auth-switch {
+  margin-bottom: 18px;
+}
+
+.mc-auth-page.mc-register .register-title {
+  margin-bottom: 17px;
+}
+
+.mc-auth-page.mc-register .form-group {
+  margin-bottom: 12px;
+}
+
+.mc-auth-page.mc-register .form-group input {
+  height: 43px;
+}
+
+.mc-auth-page.mc-register .login-link {
+  margin-top: 16px;
+}
+
+/* RESPONSIVE TABLET */
+@media (max-width: 900px) {
+  .mc-auth-layout {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .mc-auth-showcase {
+    min-height: 290px;
+    padding: 26px 30px;
+  }
+
+  .mc-showcase-copy {
     margin-top: 25px;
-    color: #607d8b;
+    max-width: 65%;
+  }
+
+  .mc-showcase-copy h1 {
+    font-size: 26px;
+  }
+
+  .mc-showcase-copy > p {
+    margin-bottom: 0;
+  }
+
+  .mc-showcase-benefits {
+    display: none;
+  }
+
+  .mc-showcase-photo {
+    height: 95%;
+    width: 50%;
+    right: 0;
+    bottom: 0;
+  }
+
+  .mc-auth-right {
+    padding: 32px 38px;
+  }
+
+  .mc-auth-shell {
+    margin: 15px auto;
+  }
 }
 
-.login-link a {
-    color: #087f8c;
-    font-weight: 600;
-    text-decoration: none;
-}
+/* RESPONSIVE MOBILE */
+@media (max-width: 540px) {
+  .mc-auth-shell {
+    padding: 0 10px;
+  }
 
+  .mc-auth-layout {
+    border-radius: 18px;
+  }
 
-/* RESPONSIVE */
+  .mc-auth-showcase {
+    min-height: 210px;
+    padding: 19px;
+  }
 
-@media (max-width: 700px) {
+  .mc-auth-logo-mark {
+    width: 40px;
+    height: 40px;
+    font-size: 34px;
+  }
 
-    .register-card {
-        padding: 30px 20px;
-    }
+  .mc-auth-logo strong {
+    font-size: 21px;
+  }
 
-    .form-row {
-        display: block;
-    }
+  .mc-auth-logo small {
+    font-size: 8px;
+  }
 
+  .mc-showcase-copy {
+    max-width: 75%;
+    margin-top: 22px;
+  }
+
+  .mc-showcase-copy h1 {
+    font-size: 21px;
+    margin-bottom: 6px;
+  }
+
+  .mc-showcase-copy > p {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .mc-showcase-photo {
+    width: 52%;
+    height: 80%;
+    opacity: .55;
+  }
+
+  .mc-auth-right {
+    padding: 24px 18px;
+  }
+
+  .mc-auth-page .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .mc-auth-page .login-options {
+    align-items: flex-start;
+  }
+
+  .mc-auth-page .login-title h1,
+  .mc-auth-page .register-title h1 {
+    font-size: 25px;
+  }
 }
