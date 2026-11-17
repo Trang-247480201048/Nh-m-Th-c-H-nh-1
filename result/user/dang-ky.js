@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-    const API_BASE = "http://127.0.0.1:5000/api";
+    const API_BASE = "/api";
 
     const form = document.getElementById("registerForm");
     const fullname = document.getElementById("fullname");
@@ -77,7 +77,7 @@ function isValidPhone(value) {
         if (!phoneValue) {
             showError("phoneError", "Vui lòng nhập số điện thoại.");
             valid = false;
-        } else if (!phoneRegex.test(phoneValue)) {
+        } else if (!isValidPhone(phoneValue)) {
             showError("phoneError", "Số điện thoại không hợp lệ.");
             valid = false;
         }
@@ -85,7 +85,8 @@ function isValidPhone(value) {
         if (!emailValue) {
             showError("emailError", "Vui lòng nhập email.");
             valid = false;
-        } else if (!emailRegex.test(emailValue)) {
+        } else if (!isValidEmail(emailValue)) {
+
             showError("emailError", "Email không hợp lệ.");
             valid = false;
         }
