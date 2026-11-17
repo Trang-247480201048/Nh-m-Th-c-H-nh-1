@@ -1,5 +1,6 @@
 
 import os
+import re
 import pyodbc
 
 from flask import (
@@ -82,6 +83,7 @@ SQL_DATABASE = os.getenv("SQL_DATABASE", "MediCare")
 SQL_DRIVER = os.getenv("SQL_DRIVER", "ODBC Driver 18 for SQL Server")
 
 app = Flask(__name__)
+app.config["SESSION_COOKIE_NAME"] = "medicare_admin_session"
 app.secret_key = os.getenv(
     "MEDICARE_SECRET_KEY",
     "change-this-secret-key-before-deployment"
@@ -360,6 +362,23 @@ def get_doctor_profile_from_db(doctor_id):
 # =====================================================
 
 def get_appointments_from_db():
+    # Dung chinh ma benh nhan cua API /api/patients de hai trang trung nhau.
+    # Ma LH-xxxxxx la ID lich hen, KHONG phai ma benh nhan.
+    def phone_key(phone):
+        return (str(phone or "")
+                .replace(" ", "").replace("-", "")
+                .replace(".", "").replace("+", ""))
+
+    patient_code_by_phone = {}
+    try:
+        for patient in get_patients_from_db():
+            key = phone_key(patient.get("phone"))
+            if key:
+                patient_code_by_phone[key] = patient.get("id", "—")
+    except Exception:
+        # Khong lam hong trang lich hen neu bang benh nhan dang gap loi.
+        app.logger.exception("Khong doc duoc ma benh nhan cho danh sach lich hen")
+
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
@@ -399,7 +418,9 @@ def get_appointments_from_db():
                 "id": row.Id,
                 "code": f"LH-{row.Id:06d}",
                 "patient": row.HoTen or "",
-                "patient_code": "—",
+                "patient_code": patient_code_by_phone.get(
+                    phone_key(row.SoDienThoai), "—"
+                ),
                 "phone": row.SoDienThoai or "",
                 "time": str(row.GioKham)[:5] if row.GioKham else "",
                 "doctor": doctor_name,
@@ -724,6 +745,160 @@ def cancel_appointment(code):
 # =====================================================
 # 8. TRANG QUAN LY LICH HEN
 # =====================================================
+
+@app.get("/api/appointments/form-options")
+@admin_required
+def appointment_form_options():
+    try:
+        doctors = get_doctors_from_db()
+        specialties = get_specialties_from_db()
+        return jsonify({"success": True, "doctors": doctors, "specialties": specialties})
+    except Exception:
+        app.logger.exception("Lỗi lấy danh sách bác sĩ cho form đặt lịch")
+        return jsonify({"success": False, "message": "Không thể tải bác sĩ/chuyên khoa từ SQL Server."}), 500
+
+
+APPOINTMENT_MINUTES = 30
+
+
+def available_appointment_slots(cursor, doctor_id, exam_date):
+    """Khung 30 phút thuộc ca đang bật, không đè lên lịch chưa hủy."""
+    cursor.execute("""
+        SELECT GioBatDau, GioKetThuc, SoLuongToiDa
+        FROM dbo.LichLamViec
+        WHERE BacSiId = ? AND NgayLamViec = ? AND TrangThai = 1
+        ORDER BY GioBatDau
+    """, (doctor_id, exam_date))
+    shifts = cursor.fetchall()
+    cursor.execute("""
+        SELECT GioKham FROM dbo.LichHen
+        WHERE BacSiId = ? AND NgayKham = ?
+          AND (TrangThai IS NULL OR TrangThai <> N'Đã hủy')
+    """, (doctor_id, exam_date))
+    booked = []
+    for row in cursor.fetchall():
+        raw = str(row.GioKham)[:5]
+        try:
+            booked.append(datetime.combine(exam_date, time.fromisoformat(raw)))
+        except ValueError:
+            continue
+
+    slots = {}
+    now = datetime.now()
+    duration = timedelta(minutes=APPOINTMENT_MINUTES)
+    for shift in shifts:
+        begin = datetime.combine(exam_date, time.fromisoformat(str(shift.GioBatDau)[:8]))
+        end = datetime.combine(exam_date, time.fromisoformat(str(shift.GioKetThuc)[:8]))
+        current = begin
+        while current + duration <= end:
+            if current >= now:
+                overlap = any(current < b + duration and b < current + duration for b in booked)
+                key = current.strftime('%H:%M')
+                # Bất kỳ ca hợp lệ nào còn chỗ thì slot được chọn.
+                slots[key] = slots.get(key, False) or not overlap
+            current += duration
+    return [{"time": key, "end": (datetime.combine(exam_date, time.fromisoformat(key)) + duration).strftime('%H:%M'),
+             "available": slots[key]} for key in sorted(slots)]
+
+
+@app.get("/api/appointments/available-slots")
+@admin_required
+def appointment_available_slots():
+    try:
+        doctor_id = int(request.args.get('doctor_id', ''))
+        exam_date = date.fromisoformat(request.args.get('date', ''))
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "Bác sĩ hoặc ngày khám không hợp lệ."}), 400
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT Id FROM dbo.BacSi WHERE Id = ? AND TrangThai = 1", (doctor_id,))
+        if not cursor.fetchone():
+            return jsonify({"success": False, "message": "Bác sĩ không hoạt động."}), 400
+        return jsonify({"success": True, "duration_minutes": APPOINTMENT_MINUTES,
+                        "slots": available_appointment_slots(cursor, doctor_id, exam_date)})
+    except Exception:
+        app.logger.exception('Lỗi tải giờ khám trống')
+        return jsonify({"success": False, "message": "Không thể tải giờ trống từ SQL Server."}), 500
+    finally:
+        if conn:
+            conn.close()
+
+
+@app.post("/api/appointments")
+@admin_required
+def create_counter_appointment():
+    """Đặt lịch tại quầy; ghi cùng bảng LichHen với lịch online."""
+    data = request.get_json(silent=True) or {}
+    patient = str(data.get("patient", "")).strip()
+    phone = str(data.get("phone", "")).strip()
+    reason = str(data.get("reason", "")).strip()
+    try:
+        doctor_id = int(data.get("doctor_id"))
+        exam_date = date.fromisoformat(str(data.get("date", "")))
+        exam_time = time.fromisoformat(str(data.get("time", "")))
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "Bác sĩ, ngày hoặc giờ khám không hợp lệ."}), 400
+    if not patient or not phone:
+        return jsonify({"success": False, "message": "Cần nhập họ tên và số điện thoại."}), 400
+    if len(patient) > 150 or len(phone) > 30 or len(reason) > 1000:
+        return jsonify({"success": False, "message": "Thông tin nhập quá dài."}), 400
+    if datetime.combine(exam_date, exam_time) < datetime.now():
+        return jsonify({"success": False, "message": "Không thể đặt lịch ở thời điểm đã qua."}), 400
+
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT HoTen, ChuyenKhoaId FROM dbo.BacSi WHERE Id = ? AND TrangThai = 1", (doctor_id,))
+        doctor = cursor.fetchone()
+        if doctor is None:
+            return jsonify({"success": False, "message": "Bác sĩ không tồn tại hoặc đã ngừng hoạt động."}), 400
+
+        # Khóa theo bác sĩ + ngày để hai lượt đặt cùng lúc không vượt qua kiểm tra.
+        lock_name = f"MediCare:booking:{doctor_id}:{exam_date.isoformat()}"
+        cursor.execute("""
+            SET NOCOUNT ON;
+            DECLARE @result int;
+            EXEC @result = sp_getapplock @Resource=?, @LockMode='Exclusive',
+                @LockOwner='Transaction', @LockTimeout=10000;
+            SELECT @result;
+        """, (lock_name,))
+        if cursor.fetchone()[0] < 0:
+            conn.rollback()
+            return jsonify({"success": False, "message": "Hệ thống đang xử lý lịch của bác sĩ. Vui lòng thử lại."}), 409
+
+        slot_key = exam_time.strftime('%H:%M')
+        slots = available_appointment_slots(cursor, doctor_id, exam_date)
+        chosen = next((slot for slot in slots if slot['time'] == slot_key), None)
+        if chosen is None:
+            conn.rollback()
+            return jsonify({"success": False, "message": "Giờ khám phải thuộc ca làm việc đang bật và đủ 30 phút. Hãy chọn giờ khác."}), 409
+        if not chosen['available']:
+            conn.rollback()
+            return jsonify({"success": False, "message": "Khung giờ này đã có lịch khám. Hãy chọn giờ còn trống."}), 409
+
+        # Các cột này đều đang được backend Admin sử dụng để đọc lịch.
+        cursor.execute("""
+            INSERT INTO dbo.LichHen
+                (HoTen, SoDienThoai, BacSi, BacSiId, NgayKham, GioKham, LyDo, TrangThai)
+            OUTPUT INSERTED.Id
+            VALUES (?, ?, ?, ?, ?, ?, ?, N'Đã xác nhận')
+        """, (patient, phone, doctor.HoTen, doctor_id, exam_date, exam_time, reason or None))
+        new_id = cursor.fetchone()[0]
+        conn.commit()
+        return jsonify({"success": True, "code": f"LH-{new_id:06d}",
+                        "message": "Đã lưu lịch hẹn tại quầy vào SQL Server."}), 201
+    except Exception:
+        if conn:
+            conn.rollback()
+        app.logger.exception("Lỗi tạo lịch hẹn tại quầy")
+        return jsonify({"success": False, "message": "Không thể lưu lịch. Kiểm tra cấu trúc bảng LichHen và nhật ký Flask."}), 500
+    finally:
+        if conn:
+            conn.close()
+
 
 @app.route("/appointments")
 @admin_required
@@ -1295,107 +1470,150 @@ def delete_work_shift(shift_id):
 
 
 # =====================================================
-# 11. DANH SACH BENH NHAN (GIU DU LIEU HIEN TAI)
+# 11. QUAN LY BENH NHAN - DOC TRUC TIEP TU SQL SERVER
 # =====================================================
 
-patients = [
-    {
-        "id": "BN-00128", "name": "Nguyễn Thị Mai",
-        "gender": "Nữ", "age": 41, "phone": "0903 456 789",
-        "last_visit": "12/09/2026", "visits": 5,
-        "status": "Đang hoạt động", "dob": "14/05/1985",
-        "email": "mai.nguyen@gmail.com",
-        "address": "24 Láng Hạ, Đống Đa, Hà Nội",
-        "insurance": "GD4 01 234 567 8901",
-        "registered": "15/03/2025"
-    },
-    {
-        "id": "BN-00129", "name": "Phạm Văn Hùng",
-        "gender": "Nam", "age": 58, "phone": "0912 345 678",
-        "last_visit": "05/10/2026", "visits": 8,
-        "status": "Đang hoạt động", "dob": "09/11/1967",
-        "email": "hung.pham@gmail.com",
-        "address": "Cầu Giấy, Hà Nội",
-        "insurance": "GD4 02 345 678 9012",
-        "registered": "20/04/2025"
-    },
-    {
-        "id": "BN-00130", "name": "Trần Ngọc Linh",
-        "gender": "Nữ", "age": 26, "phone": "0987 654 321",
-        "last_visit": "", "visits": 1,
-        "status": "Đang hoạt động", "dob": "21/07/2000",
-        "email": "linh.tran@gmail.com",
-        "address": "Hai Bà Trưng, Hà Nội",
-        "insurance": "", "registered": "06/10/2026"
-    },
-    {
-        "id": "BN-00131", "name": "Lê Minh Khang",
-        "gender": "Nam", "age": 7, "phone": "0938 222 666",
-        "last_visit": "22/08/2026", "visits": 3,
-        "status": "Đang hoạt động", "dob": "11/02/2019",
-        "email": "khang.le@gmail.com",
-        "address": "Thanh Xuân, Hà Nội",
-        "insurance": "GD4 03 456 789 0123",
-        "registered": "03/02/2026"
-    },
-    {
-        "id": "BN-00132", "name": "Võ Thanh Tâm",
-        "gender": "Nữ", "age": 35, "phone": "0909 112 233",
-        "last_visit": "18/09/2026", "visits": 2,
-        "status": "Đang hoạt động", "dob": "17/04/1991",
-        "email": "tam.vo@gmail.com",
-        "address": "Ba Đình, Hà Nội",
-        "insurance": "GD4 04 567 890 1234",
-        "registered": "12/01/2026"
-    },
-    {
-        "id": "BN-00133", "name": "Đặng Quốc Bảo",
-        "gender": "Nam", "age": 46, "phone": "0972 456 890",
-        "last_visit": "01/10/2026", "visits": 6,
-        "status": "Đang hoạt động", "dob": "30/08/1980",
-        "email": "bao.dang@gmail.com",
-        "address": "Hoàng Mai, Hà Nội",
-        "insurance": "GD4 05 678 901 2345",
-        "registered": "11/11/2025"
-    },
-    {
-        "id": "BN-00134", "name": "Bùi Thị Hương",
-        "gender": "Nữ", "age": 62, "phone": "0918 775 664",
-        "last_visit": "20/10/2026", "visits": 12,
-        "status": "Đang hoạt động", "dob": "05/01/1964",
-        "email": "huong.bui@gmail.com",
-        "address": "Long Biên, Hà Nội",
-        "insurance": "GD4 06 789 012 3456",
-        "registered": "01/09/2024"
-    },
-    {
-        "id": "BN-00135", "name": "Hoàng Anh Tuấn",
-        "gender": "Nam", "age": 31, "phone": "0966 231 234",
-        "last_visit": "20/10/2026", "visits": 4,
-        "status": "Đang hoạt động", "dob": "02/12/1994",
-        "email": "tuan.hoang@gmail.com",
-        "address": "Nam Từ Liêm, Hà Nội",
-        "insurance": "GD4 07 890 123 4567",
-        "registered": "18/05/2025"
-    },
-    {
-        "id": "BN-00136", "name": "Ngô Phương Anh",
-        "gender": "Nữ", "age": 29, "phone": "0902 555 888",
-        "last_visit": "16/07/2026", "visits": 2,
-        "status": "Đã khóa", "dob": "19/03/1997",
-        "email": "anh.ngo@gmail.com",
-        "address": "Đống Đa, Hà Nội",
-        "insurance": "", "registered": "08/06/2025"
-    }
-]
+def get_patients_from_db():
+    """Tra benh nhan co tai khoan va benh nhan chi dat lich.
+
+    Dung dung truy van tu Backend Patient de hai phia dong bo du lieu.
+    """
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            WITH LichHenTongHop AS (
+                SELECT
+                    REPLACE(
+                        REPLACE(
+                            REPLACE(
+                                REPLACE(SoDienThoai, ' ', ''),
+                                '-',
+                                ''
+                            ),
+                            '.',
+                            ''
+                        ),
+                        '+',
+                        ''
+                    ) AS SoDienThoaiKey,
+
+                    MAX(HoTen) AS HoTenDatLich,
+                    MAX(SoDienThoai) AS SoDienThoaiGoc,
+                    MAX(NgayKham) AS LanKhamGanNhat,
+                    COUNT(*) AS SoLuotKham,
+                    MIN(Id) AS MaLichHenDauTien
+
+                FROM dbo.LichHen
+                WHERE SoDienThoai IS NOT NULL
+                GROUP BY
+                    REPLACE(
+                        REPLACE(
+                            REPLACE(
+                                REPLACE(SoDienThoai, ' ', ''),
+                                '-',
+                                ''
+                            ),
+                            '.',
+                            ''
+                        ),
+                        '+',
+                        ''
+                    )
+            ),
+
+            TaiKhoan AS (
+                SELECT
+                    Id,
+                    HoTen,
+                    SoDienThoai,
+                    Email,
+                    NgaySinh,
+                    TrangThai,
+
+                    REPLACE(
+                        REPLACE(
+                            REPLACE(
+                                REPLACE(SoDienThoai, ' ', ''),
+                                '-',
+                                ''
+                            ),
+                            '.',
+                            ''
+                        ),
+                        '+',
+                        ''
+                    ) AS SoDienThoaiKey
+
+                FROM dbo.TaiKhoanNguoiDung
+            )
+
+            SELECT
+                tk.Id AS TaiKhoanId,
+                COALESCE(tk.HoTen, lh.HoTenDatLich) AS HoTen,
+                COALESCE(tk.SoDienThoai, lh.SoDienThoaiGoc)
+                    AS SoDienThoai,
+                tk.Email,
+                tk.NgaySinh,
+                tk.TrangThai,
+                lh.LanKhamGanNhat,
+                ISNULL(lh.SoLuotKham, 0) AS SoLuotKham,
+                lh.MaLichHenDauTien
+
+            FROM TaiKhoan AS tk
+
+            FULL OUTER JOIN LichHenTongHop AS lh
+                ON tk.SoDienThoaiKey = lh.SoDienThoaiKey
+
+            ORDER BY HoTen
+        """)
+        results = []
+        today = date.today()
+
+        for row in cursor.fetchall():
+            age = None
+            if row.NgaySinh:
+                age = today.year - row.NgaySinh.year
+                if (today.month, today.day) < (row.NgaySinh.month, row.NgaySinh.day):
+                    age -= 1
+
+            if row.TaiKhoanId is not None:
+                code = f"BN-{row.TaiKhoanId:05d}"
+            else:
+                code = f"BN-LH-{row.MaLichHenDauTien:06d}"
+
+            if row.TaiKhoanId is None or row.TrangThai == "Hoạt động":
+                status = "Đang hoạt động"
+            else:
+                status = "Đã khóa"
+
+            results.append({
+                "id": code,
+                "name": row.HoTen or "",
+                "phone": row.SoDienThoai or "",
+                "age": age,
+                "dob": row.NgaySinh.strftime("%Y-%m-%d") if row.NgaySinh else "",
+                "email": row.Email or "",
+                "last_visit": (
+                    row.LanKhamGanNhat.strftime("%Y-%m-%d")
+                    if row.LanKhamGanNhat else ""
+                ),
+                "visits": row.SoLuotKham or 0,
+                "status": status
+            })
+
+        return results
+    finally:
+        conn.close()
 
 
 @app.route("/patients", endpoint="patients")
 @admin_required
 def patients_page():
+    # Giao dien nhan du lieu dong tu /api/patients, khong nhung danh sach mau.
     return render_template(
         "patients.html",
-        patients=patients,
+        patients=[],
         today_long=date.today().strftime("%A, %d/%m/%Y"),
         today=date.today().strftime("%d/%m/%Y"),
         admin_username=session.get("admin_username", "admin"),
@@ -1406,43 +1624,107 @@ def patients_page():
 @app.get("/api/patients")
 @admin_required
 def patients_api():
-    return jsonify({"success": True, "patients": patients})
+    try:
+        patients = get_patients_from_db()
+        return jsonify({
+            "success": True,
+            "count": len(patients),
+            "patients": patients
+        })
+    except Exception:
+        app.logger.exception("Loi doc danh sach benh nhan tu SQL Server")
+        return jsonify({
+            "success": False,
+            "message": "Khong the tai benh nhan tu SQL Server."
+        }), 500
 
 
 @app.post("/api/patients")
 @admin_required
 def create_patient():
-    data = request.get_json(silent=True) or request.form
+    """Tao tai khoan benh nhan THAT trong SQL Server, khong luu RAM.
 
+    Yeu cau Admin nhap mat khau du 8 ky tu; khong tao tai khoan voi
+    mat khau mac dinh hay mat khau khong ai biet.
+    """
+    data = request.get_json(silent=True) or request.form
     name = str(data.get("name", "")).strip()
     phone = str(data.get("phone", "")).strip()
+    email = str(data.get("email", "")).strip().lower()
+    dob = str(data.get("dob", "")).strip()
+    password = str(data.get("password", ""))
 
-    if not name or not phone:
+    if not name or not phone or not password:
         return jsonify({
             "success": False,
-            "message": "Vui lòng nhập họ tên và số điện thoại."
+            "message": "Can nhap ho ten, so dien thoai va mat khau."
+        }), 400
+    if len(password) < 8:
+        return jsonify({
+            "success": False,
+            "message": "Mat khau phai co it nhat 8 ky tu."
+        }), 400
+    if len(name) > 150 or not re.fullmatch(r"[0-9+() .-]{9,20}", phone):
+        return jsonify({
+            "success": False,
+            "message": "Ho ten hoac so dien thoai khong hop le."
+        }), 400
+    if email and (len(email) > 254 or not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email)):
+        return jsonify({
+            "success": False,
+            "message": "Email khong hop le."
+        }), 400
+    try:
+        birth_date = date.fromisoformat(dob) if dob else None
+        if birth_date and birth_date > date.today():
+            raise ValueError("future birth date")
+    except ValueError:
+        return jsonify({
+            "success": False,
+            "message": "Ngay sinh khong hop le."
         }), 400
 
-    next_number = 128 + len(patients)
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT Id FROM dbo.TaiKhoanNguoiDung
+            WHERE SoDienThoai = ? OR (? <> '' AND Email = ?)
+        """, (phone, email, email))
+        if cursor.fetchone():
+            return jsonify({
+                "success": False,
+                "message": "So dien thoai hoac email da duoc dang ky."
+            }), 409
 
-    item = {
-        "id": f"BN-{next_number:05d}",
-        "name": name,
-        "gender": str(data.get("gender", "Khác")),
-        "age": 0,
-        "phone": phone,
-        "last_visit": "",
-        "visits": 0,
-        "status": "Đang hoạt động",
-        "dob": str(data.get("dob", "")),
-        "email": str(data.get("email", "")),
-        "address": str(data.get("address", "")),
-        "insurance": "",
-        "registered": date.today().strftime("%d/%m/%Y")
-    }
-
-    patients.append(item)
-    return jsonify({"success": True, "patient": item}), 201
+        cursor.execute("""
+            INSERT INTO dbo.TaiKhoanNguoiDung
+                (HoTen, SoDienThoai, Email, NgaySinh, MatKhauHash, TrangThai)
+            OUTPUT INSERTED.Id
+            VALUES (?, ?, ?, ?, ?, N'Hoạt động')
+        """, (
+            name, phone, email or None, birth_date,
+            generate_password_hash(password)
+        ))
+        new_id = cursor.fetchone()[0]
+        conn.commit()
+        return jsonify({
+            "success": True,
+            "message": "Da tao benh nhan trong SQL Server.",
+            "patient": {"id": f"BN-{new_id:05d}", "name": name, "phone": phone}
+        }), 201
+    except Exception:
+        if conn:
+            conn.rollback()
+        app.logger.exception("Loi them benh nhan vao SQL Server")
+        return jsonify({
+            "success": False,
+            "message": "Khong the luu benh nhan vao SQL Server."
+        }), 500
+    finally:
+        if conn:
+            conn.close()
 
 
 # =====================================================
@@ -1582,6 +1864,130 @@ def specialties_page():
         admin_username=session.get("admin_username", "admin"),
         active_page="specialties"
     )
+
+@app.get('/api/admin/specialties')
+@admin_required
+def ck_api_list():
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute('''SELECT ck.Id, ck.TenChuyenKhoa, COALESCE(cfg.PhiKham,250000) AS PhiKham,
+            (SELECT COUNT(*) FROM dbo.BacSi b WHERE b.ChuyenKhoaId=ck.Id) AS DoctorCount
+            FROM dbo.ChuyenKhoa ck LEFT JOIN dbo.CauHinhChuyenKhoa cfg ON cfg.ChuyenKhoaId=ck.Id
+            ORDER BY ck.Id''')
+        specialties = [{'id':int(r.Id),'name':r.TenChuyenKhoa,'fee':float(r.PhiKham),
+                        'doctorCount':int(r.DoctorCount),'services':[]} for r in cur.fetchall()]
+        by_id = {x['id']:x for x in specialties}
+        cur.execute('''SELECT Id, ChuyenKhoaId, TenDichVu, PhiKham, ThoiLuongPhut, TrangThai
+                       FROM dbo.DichVuKham ORDER BY Id''')
+        for r in cur.fetchall():
+            if r.ChuyenKhoaId in by_id:
+                by_id[r.ChuyenKhoaId]['services'].append({
+                    'id':int(r.Id), 'code':f'DV-{r.Id:03d}', 'name':r.TenDichVu,
+                    'fee':float(r.PhiKham), 'duration':int(r.ThoiLuongPhut),
+                    'status':r.TrangThai})
+        return jsonify(success=True, data=specialties)
+    except Exception:
+        app.logger.exception('Lỗi tải danh mục dịch vụ')
+        return jsonify(success=False,message='Không thể tải danh mục từ SQL Server.'),500
+    finally:
+        conn.close()
+
+@app.post('/api/admin/specialties')
+@admin_required
+def ck_api_create_specialty():
+    body=request.get_json(silent=True) or {}
+    name=str(body.get('name') or '').strip()
+    try: fee=float(body.get('fee'))
+    except (TypeError,ValueError): fee=-1
+    if not name or len(name)>120 or not 0<=fee<=100000000:
+        return jsonify(success=False,message='Tên hoặc phí chuyên khoa không hợp lệ.'),400
+    conn=get_db_connection()
+    try:
+        cur=conn.cursor()
+        cur.execute('SELECT Id FROM dbo.ChuyenKhoa WHERE TenChuyenKhoa=?',(name,))
+        if cur.fetchone(): return jsonify(success=False,message='Chuyên khoa đã tồn tại.'),409
+        cur.execute('INSERT INTO dbo.ChuyenKhoa(TenChuyenKhoa) OUTPUT INSERTED.Id VALUES (?)',(name,))
+        new_id=int(cur.fetchone()[0])
+        cur.execute('INSERT INTO dbo.CauHinhChuyenKhoa(ChuyenKhoaId,PhiKham) VALUES (?,?)',(new_id,fee))
+        conn.commit()
+        return jsonify(success=True,id=new_id),201
+    except Exception:
+        conn.rollback(); app.logger.exception('Lỗi tạo chuyên khoa')
+        return jsonify(success=False,message='Không tạo được chuyên khoa; kiểm tra cấu trúc bảng ChuyenKhoa.'),500
+    finally: conn.close()
+
+@app.put('/api/admin/specialties/<int:specialty_id>')
+@admin_required
+def ck_api_update_specialty(specialty_id):
+    body=request.get_json(silent=True) or {}
+    name=str(body.get('name') or '').strip()
+    try: fee=float(body.get('fee'))
+    except (TypeError,ValueError): fee=-1
+    if not name or len(name)>120 or not 0<=fee<=100000000:
+        return jsonify(success=False,message='Tên hoặc phí chuyên khoa không hợp lệ.'),400
+    conn=get_db_connection()
+    try:
+        cur=conn.cursor()
+        cur.execute('SELECT Id FROM dbo.ChuyenKhoa WHERE Id=?',(specialty_id,))
+        if not cur.fetchone(): return jsonify(success=False,message='Không thấy chuyên khoa.'),404
+        cur.execute('SELECT Id FROM dbo.ChuyenKhoa WHERE TenChuyenKhoa=? AND Id<>?',(name,specialty_id))
+        if cur.fetchone(): return jsonify(success=False,message='Tên chuyên khoa bị trùng.'),409
+        cur.execute('UPDATE dbo.ChuyenKhoa SET TenChuyenKhoa=? WHERE Id=?',(name,specialty_id))
+        cur.execute('''UPDATE dbo.CauHinhChuyenKhoa SET PhiKham=? WHERE ChuyenKhoaId=?;
+                       IF @@ROWCOUNT=0 INSERT INTO dbo.CauHinhChuyenKhoa(ChuyenKhoaId,PhiKham) VALUES (?,?)''',
+                    (fee,specialty_id,specialty_id,fee))
+        conn.commit()
+        return jsonify(success=True)
+    except Exception:
+        conn.rollback(); app.logger.exception('Lỗi sửa chuyên khoa')
+        return jsonify(success=False,message='Không sửa được chuyên khoa.'),500
+    finally: conn.close()
+
+def ck_validate_service(body):
+    name=str(body.get('name') or '').strip()
+    try: fee=float(body.get('fee')); duration=int(body.get('duration'))
+    except (ValueError,TypeError): return None
+    status=body.get('status')
+    if not name or len(name)>120 or not 0<fee<=100000000 or duration not in (15,20,30,45,60) or status not in ('active','paused'):
+        return None
+    return name,fee,duration,status
+
+@app.post('/api/admin/specialties/<int:specialty_id>/services')
+@admin_required
+def ck_api_create_service(specialty_id):
+    values=ck_validate_service(request.get_json(silent=True) or {})
+    if not values: return jsonify(success=False,message='Thông tin dịch vụ không hợp lệ.'),400
+    conn=get_db_connection()
+    try:
+        cur=conn.cursor()
+        cur.execute('SELECT Id FROM dbo.ChuyenKhoa WHERE Id=?',(specialty_id,))
+        if not cur.fetchone(): return jsonify(success=False,message='Không thấy chuyên khoa.'),404
+        cur.execute('''INSERT INTO dbo.DichVuKham(ChuyenKhoaId,TenDichVu,PhiKham,ThoiLuongPhut,TrangThai)
+                       OUTPUT INSERTED.Id VALUES (?,?,?,?,?)''',(specialty_id,*values))
+        new_id=int(cur.fetchone()[0]); conn.commit()
+        return jsonify(success=True,id=new_id),201
+    except Exception:
+        conn.rollback(); app.logger.exception('Lỗi tạo dịch vụ')
+        return jsonify(success=False,message='Không lưu được dịch vụ vào SQL Server.'),500
+    finally: conn.close()
+
+@app.put('/api/admin/services/<int:service_id>')
+@admin_required
+def ck_api_update_service(service_id):
+    values=ck_validate_service(request.get_json(silent=True) or {})
+    if not values: return jsonify(success=False,message='Thông tin dịch vụ không hợp lệ.'),400
+    conn=get_db_connection()
+    try:
+        cur=conn.cursor()
+        cur.execute('''UPDATE dbo.DichVuKham SET TenDichVu=?,PhiKham=?,ThoiLuongPhut=?,TrangThai=?,
+                       NgayCapNhat=SYSDATETIME() WHERE Id=?''',(*values,service_id))
+        if cur.rowcount==0: return jsonify(success=False,message='Không thấy dịch vụ.'),404
+        conn.commit(); return jsonify(success=True)
+    except Exception:
+        conn.rollback(); app.logger.exception('Lỗi sửa dịch vụ')
+        return jsonify(success=False,message='Không sửa được dịch vụ.'),500
+    finally: conn.close()
 
 # =====================================================
 # 14. CHAY UNG DUNG
